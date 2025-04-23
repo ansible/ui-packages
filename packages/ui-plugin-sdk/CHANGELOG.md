@@ -1,3 +1,13 @@
+## 0.0.4 (2025-04-23)
+
+### 🩹 Fixes
+
+- readme ([577e1d0](https://github.com/ansible/ui-packages/commit/577e1d0))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.0.3 (2025-04-23)
 
 ### 🩹 Fixes
