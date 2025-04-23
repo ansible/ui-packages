@@ -34,4 +34,4 @@ npm test
 ```
 
 
-https://github.com/angular/angular/blob/main/contributing-docs/commit-message-guidelines.md
+https://www.conventionalcommits.org/en/v1.0.0/#summary
