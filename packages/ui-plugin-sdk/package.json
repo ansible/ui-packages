@@ -1,6 +1,6 @@
 {
   "name": "@ansible/ui-plugin-sdk",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Ansible UI Plugin SDK",
   "author": "The Red Hat Ansible Team",
   "license": "Apache-2.0",

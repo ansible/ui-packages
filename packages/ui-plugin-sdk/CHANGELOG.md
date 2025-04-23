@@ -1,3 +1,13 @@
+## 0.0.5 (2025-04-23)
+
+### 🩹 Fixes
+
+- gha fix ([65696d4](https://github.com/ansible/ui-packages/commit/65696d4))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.0.4 (2025-04-23)
 
 ### 🩹 Fixes
