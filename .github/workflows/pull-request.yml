@@ -11,6 +11,10 @@ jobs:
   pull-request:
     name: Pull Request
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    timeout-minutes: 10
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
