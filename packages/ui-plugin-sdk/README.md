@@ -5,6 +5,8 @@ This is done by registering a service with the AAP gateway.
 Each service can entend the AAP UI with new integrations that are dynamically loaded from the service.
 This SDK defines the interfaces for defining a UI plugin.
 
+this file needs to be updated
+
 ## Example of extending the navigation
 
 ```typescript

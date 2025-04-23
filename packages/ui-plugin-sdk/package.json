@@ -36,8 +36,7 @@
     "depcheck": "npx depcheck"
   },
   "devDependencies": {
-    "@sinclair/typebox": "^0.34.33",
-    "vite": "^6.3.2",
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "vite": "^6.3.2"
   }
 }
