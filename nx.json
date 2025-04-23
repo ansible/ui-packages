@@ -1,4 +1,16 @@
 {
+  "release": {
+    "projects": ["packages/ui-plugin-sdk"],
+    "projectsRelationship": "independent",
+    "changelog": {
+      "projectChangelogs": {
+        "createRelease": "github"
+      }
+    },
+    "version": {
+      "conventionalCommits": true
+    }
+  },
   "targetDefaults": {
     "start": {
       "dependsOn": []

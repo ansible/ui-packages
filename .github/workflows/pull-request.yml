@@ -1,10 +1,7 @@
-name: CICD
+name: Pull Request
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
   
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,7 +14,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
+        with:
+          fetch-depth: 0
+          filter: tree:0
+          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -27,13 +27,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Test Affected Packages
+      - name: Build Packages
         run: npx nx affected --target tsc,vitest,prettier,eslint,depcheck --base=origin/main --head=${{ github.sha }}
 
-      - name: Build Affected Packages
-        if: github.event_name == 'push'
-        run: npx nx affected --target build --base=origin/main --head=${{ github.sha }}
-
-      # - name: Publish Affected Packages
-      #   if: github.event_name == 'push'
-      #   run: npx nx affected --target publish --base=origin/main --head=${{ github.sha }}
+      - name: Build Packages
+        run: npx nx affected --target tsc,vitest,prettier,eslint,depcheck --base=origin/main --head=${{ github.sha }}
