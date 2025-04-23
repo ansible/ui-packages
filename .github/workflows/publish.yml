@@ -33,19 +33,15 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-        shell: bash
 
       - name: Print Environment Info
         run: npx nx report
-        shell: bash
       
       - name: Build
-        run: npx nx build
-        shell: bash
+        run: npm run build
 
       - name: Publish packages
         run: npx nx release publish
-        shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
