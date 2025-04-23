@@ -36,7 +36,7 @@ npm test
 
 ## Working with a specific packages
 
-Change to the directory containing the package you are intested in.
+Change to the directory containing the package you are interested in.
 
 ```
 cd packages/some-package
