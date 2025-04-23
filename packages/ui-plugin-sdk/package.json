@@ -1,10 +1,11 @@
 {
   "name": "@ansible/ui-plugin-sdk",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Ansible UI Plugin SDK",
   "author": "The Red Hat Ansible Team",
   "license": "Apache-2.0",
   "type": "module",
+  "public": true,
   "keywords": [
     "ansible"
   ],
