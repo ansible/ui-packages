@@ -1,0 +1,50 @@
+{
+  "targetDefaults": {
+    "start": {
+      "dependsOn": []
+    },
+    "clean": {
+      "dependsOn": []
+    },
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "test": {
+      "cache": true,
+      "dependsOn": [],
+      "outputs": ["{projectRoot}/coverage"]
+    },
+    "tsc": {
+      "cache": true,
+      "dependsOn": []
+    },
+    "eslint": {
+      "cache": true,
+      "dependsOn": []
+    },
+    "eslint:fix": {
+      "dependsOn": []
+    },
+    "vitest": {
+      "cache": true,
+      "dependsOn": [],
+      "outputs": ["{projectRoot}/coverage"]
+    },
+    "vitest:ui": {
+      "dependsOn": []
+    },
+    "prettier": {
+      "cache": true,
+      "dependsOn": []
+    },
+    "prettier:fix": {
+      "dependsOn": []
+    },
+    "depcheck": {
+      "cache": true,
+      "dependsOn": []
+    }
+  }
+}

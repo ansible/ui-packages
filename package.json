@@ -1,0 +1,55 @@
+{
+  "name": "@ansible/ui-packages",
+  "description": "React UI Framework built on PatternFly by the Ansible team",
+  "author": "The Red Hat Ansible Team",
+  "license": "Apache-2.0",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start": "nx show projects",
+    "clean": "nx exec -- rm -rf dist && rm -rf .nx",
+    "reinstall": "nx exec -- rm -rf dist node_modules && rm -rf .nx node_modules package-lock.json && npm install",
+    "build": "nx run-many --target build",
+    "graph": "nx graph",
+    "test": "nx run-many --target tsc,vitest,prettier,eslint,depcheck",
+    "tsc": "nx run-many --target tsc",
+    "eslint": "nx run-many --target eslint",
+    "eslint:fix": "nx run-many --target eslint:fix",
+    "vitest": "nx run-many --target vitest",
+    "vitest:ui": "vitest --ui",
+    "prettier": "nx run-many --target prettier",
+    "prettier:fix": "nx run-many --target prettier:fix",
+    "depcheck": "nx run-many --target depcheck",
+    "fix": "nx run-many --target prettier:fix,eslint:fix",
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
+  },
+  "devDependencies": {
+    "globals": "^15.13.0",
+    "depcheck": "^1.4.7",
+    "nx": "^20.2.1",
+    "@eslint/js": "^9.16.0",
+    "@vitejs/plugin-react-swc": "^3.7.2",
+    "@vitest/ui": "^2.1.8",
+    "eslint": "^9.16.0",
+    "eslint-plugin-react-compiler": "^19.0.0-beta-df7b47d-20241124",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "happy-dom": "^15.11.7",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8"
+  },
+  "lint-staged": {
+    "*.ts[x]": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}
