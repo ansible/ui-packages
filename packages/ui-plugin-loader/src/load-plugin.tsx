@@ -19,4 +19,5 @@ export async function loadPlugin(pluginName: string, pluginUrl: string) {
       return loadedRemote.default
     }
   }
+  return new Error(`Invalid plugin: ${pluginName} from ${pluginUrl}`)
 }

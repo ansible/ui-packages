@@ -1,5 +1,5 @@
 import { loadRemote } from '@module-federation/enhanced/runtime'
-import { ComponentType, lazy, Suspense, useMemo } from 'react'
+import { ComponentType, lazy, ReactNode, Suspense, useMemo } from 'react'
 import { ErrorBoundary } from './ErrorBoundary'
 
 /**
@@ -12,7 +12,17 @@ import { ErrorBoundary } from './ErrorBoundary'
  *   A UI plugin extends the left hand navigation and
  *   indicates what dynamic component to use for the navigation.
  */
-export function PluginComponent({ pluginName, componentName }: { pluginName: string; componentName: string }) {
+export function PluginComponent({
+  pluginName,
+  componentName,
+  loadingComponent,
+  errorComponent,
+}: {
+  pluginName: string
+  componentName: string
+  loadingComponent?: ReactNode
+  errorComponent?: ReactNode
+}) {
   const RemoteComponent = useMemo(() => {
     return lazy(
       () =>
@@ -22,28 +32,8 @@ export function PluginComponent({ pluginName, componentName }: { pluginName: str
     )
   }, [componentName, pluginName])
   return (
-    <Suspense
-      fallback={
-        <div>Loading...</div>
-        // <Bullseye>
-        //   <Spinner size="xl" />
-        // </Bullseye>
-      }
-    >
-      <ErrorBoundary
-      // message={
-      //   <EmptyState>
-      //     <EmptyStateHeader
-      //       titleText={t('Component Error')}
-      //       headingLevel="h4"
-      //       icon={<EmptyStateIcon icon={ExclamationCircleIcon} />}
-      //     />
-      //     <EmptyStateBody>
-      //       {t('The component could not be loaded. Please check the console for more details.')}
-      //     </EmptyStateBody>
-      //   </EmptyState>
-      // }
-      >
+    <Suspense fallback={loadingComponent ?? <div>Loading...</div>}>
+      <ErrorBoundary errorComponent={errorComponent}>
         <RemoteComponent />
       </ErrorBoundary>
     </Suspense>

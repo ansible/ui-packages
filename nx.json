@@ -1,6 +1,6 @@
 {
   "release": {
-    "projects": ["packages/ui-plugin-sdk"],
+    "projects": ["packages/ui-plugin-sdk", "packages/ui-plugin-loader"],
     "projectsRelationship": "independent",
     "changelog": {
       "projectChangelogs": {
