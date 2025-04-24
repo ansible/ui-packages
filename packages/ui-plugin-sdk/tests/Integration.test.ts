@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isValidIntegration, isValidIntegrationArray } from './Integration'
-import { IntegrationType } from './IntegrationType'
-import { Navigation } from './Navigation'
+import { IntegrationType, isValidIntegration, isValidIntegrationArray, Navigation } from '../src'
 
 describe('isValidIntegration', () => {
   it('should return false for non-object values', () => {
