@@ -1,4 +1,4 @@
-import { Component, ErrorInfo, ReactNode } from 'react'
+import { Component, ReactNode } from 'react'
 
 interface Props {
   message?: ReactNode
@@ -6,33 +6,20 @@ interface Props {
 }
 
 interface State {
-  message: ReactNode
-  hasError: boolean
+  errorMessage: string | null
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
-    message: this.props.message,
-    hasError: false,
-  }
+  public state: State = { errorMessage: null }
 
   public static getDerivedStateFromError(error: Error): State {
-    // Update state so the next render will show the fallback UI.
-    return {
-      message: error.message,
-      hasError: true,
-    }
-  }
-
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Uncaught error:', error, errorInfo)
+    return { errorMessage: error.message }
   }
 
   public render() {
-    if (this.state.hasError) {
-      return <h1>{this.state.message}</h1>
+    if (this.state.errorMessage) {
+      return this.props.message ?? this.state.errorMessage
     }
-
     return this.props.children
   }
 }

@@ -10,7 +10,10 @@ export async function loadPlugin(pluginName: string, pluginUrl: string) {
   } else {
     federationHost.registerRemotes([{ name: pluginName, entry }])
   }
-  const loadedRemote = await federationHost.loadRemote(`${pluginName}/ui-plugin`)
+  const loadedRemote = await federationHost.loadRemote(`${pluginName}/ui-plugin`).catch((e) => {
+    console.error('Error loading remote:', e)
+    return null
+  })
   if (typeof loadedRemote === 'object' && loadedRemote !== null && 'default' in loadedRemote) {
     if (isValidPlugin(loadedRemote.default)) {
       return loadedRemote.default

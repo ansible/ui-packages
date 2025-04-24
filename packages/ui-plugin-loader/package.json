@@ -1,11 +1,11 @@
 {
   "name": "@ansible/ui-plugin-loader",
-  "version": "0.0.6",
+  "version": "0.0.1",
   "description": "Ansible UI Plugin Loader",
   "author": "The Red Hat Ansible Team",
   "license": "Apache-2.0",
   "type": "module",
-  "public": true,
+  "public": false,
   "keywords": [
     "ansible"
   ],
