@@ -1,7 +1,7 @@
 {
-  "name": "@ansible/ui-plugin-sdk",
+  "name": "@ansible/ui-plugin-loader",
   "version": "0.0.6",
-  "description": "Ansible UI Plugin SDK",
+  "description": "Ansible UI Plugin Loader",
   "author": "The Red Hat Ansible Team",
   "license": "Apache-2.0",
   "type": "module",
@@ -12,7 +12,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ansible/ui-packages.git",
-    "directory": "packages/ui-plugin-sdk"
+    "directory": "packages/ui-plugin-loader"
   },
   "main": "./dist/index.umd.cjs",
   "module": "./dist/index.js",
@@ -37,8 +37,19 @@
     "vitest:ui": "vitest --ui",
     "depcheck": "npx depcheck"
   },
+  "peerDependencies": {
+    "@module-federation/enhanced": "^0.13.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
   "devDependencies": {
+    "@ansible/ui-plugin-sdk": "0.0.6",
+    "@module-federation/enhanced": "^0.13.0",
+    "@testing-library/react": "^13.4.0",
+    "@types/react": "^18.3.20",
     "concurrently": "^9.1.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "vite": "^6.3.3",
     "vitest": "^3.1.2"
   }

@@ -1,5 +1,6 @@
 /// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react-swc'
+import * as path from 'path'
 import { defineConfig, UserConfig } from 'vite'
 
 // https://vitejs.dev/config/
@@ -30,6 +31,7 @@ export default defineConfig({
   esbuild: { legalComments: 'none' },
   test: {
     environment: 'happy-dom',
+    setupFiles: [path.resolve(__dirname, 'vitest.setup.ts')],
     server: {
       deps: {
         inline: ['@patternfly/react-styles'],
