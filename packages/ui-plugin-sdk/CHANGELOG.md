@@ -1,3 +1,13 @@
+## 0.1.1 (2025-04-24)
+
+### 🩹 Fixes
+
+- update build configs and cleanup tests ([#8](https://github.com/ansible/ui-packages/pull/8))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.1.0 (2025-04-24)
 
 ### 🚀 Features
