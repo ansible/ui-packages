@@ -1,3 +1,13 @@
+## 0.0.6 (2025-04-24)
+
+### 🩹 Fixes
+
+- update readme ([#4](https://github.com/ansible/ui-packages/pull/4))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.0.5 (2025-04-23)
 
 ### 🩹 Fixes
