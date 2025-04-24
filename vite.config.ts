@@ -22,13 +22,6 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     setupFiles: [path.resolve(__dirname, 'vitest.setup.ts')],
-    server: {
-      deps: {
-        inline: ['@patternfly/react-styles'],
-      },
-    },
-    coverage: {
-      exclude: ['**/dist/**'],
-    },
+    coverage: { exclude: ['**/dist/**'] },
   },
 } as UserConfig)
