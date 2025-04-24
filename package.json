@@ -4,6 +4,18 @@
   "author": "The Red Hat Ansible Team",
   "license": "Apache-2.0",
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "windows"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
   "workspaces": [
     "packages/*"
   ],
