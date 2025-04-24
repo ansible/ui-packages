@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Integration } from './Integration'
-import { IntegrationType } from './IntegrationType'
-import { isValidPlugin, Plugin } from './Plugin'
+import { Integration, IntegrationType, isValidPlugin, Plugin } from '../src'
 
 describe('isValidPlugin', () => {
   it('should return false for non-object input', () => {

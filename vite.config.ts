@@ -8,22 +8,12 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      external: [
-        'react',
-        '@patternfly/react-core',
-        '@patternfly/react-icons',
-        '@patternfly/patternfly',
-        '@patternfly/react-table',
-        'monaco-editor',
-      ],
+      external: ['react', 'react-dom', '@module-federation/enhanced'],
       output: {
         globals: {
           react: 'React',
-          '@patternfly/react-core': 'PatternflyReactCore',
-          '@patternfly/react-icons': 'PatternflyReactIcons',
-          '@patternfly/react-table': 'PatternflyReactTable',
-          '@patternfly/patternfly': 'Patternfly',
-          'monaco-editor': 'MonacoEditor',
+          'react-dom': 'ReactDom',
+          '@module-federation/enhanced': 'ModuleFederationEnhanced',
         },
       },
     },
@@ -36,6 +26,9 @@ export default defineConfig({
       deps: {
         inline: ['@patternfly/react-styles'],
       },
+    },
+    coverage: {
+      exclude: ['**/dist/**'],
     },
   },
 } as UserConfig)

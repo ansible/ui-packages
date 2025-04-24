@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { PluginComponent } from './PluginComponent'
+import { PluginComponent } from '../src'
 
 // Mock dependencies
 vi.mock('@module-federation/enhanced/runtime', () => ({

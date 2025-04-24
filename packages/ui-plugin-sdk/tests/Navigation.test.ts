@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { IntegrationType } from './IntegrationType'
-import { isValidNavigation, Navigation } from './Navigation'
+import { IntegrationType, isValidNavigation, Navigation } from '../src'
 
 describe('isValidNavigation', () => {
   it('should return true for a valid Navigation object', () => {
