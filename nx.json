@@ -1,6 +1,6 @@
 {
   "release": {
-    "projects": ["packages/ui-plugin-sdk"],
+    "projects": ["packages/ui-plugin-sdk", "packages/ui-plugin-loader"],
     "projectsRelationship": "independent",
     "changelog": {
       "projectChangelogs": {
@@ -30,19 +30,18 @@
     },
     "tsc": {
       "cache": true,
-      "dependsOn": []
+      "dependsOn": ["build"]
     },
     "eslint": {
       "cache": true,
-      "dependsOn": []
+      "dependsOn": ["build"]
     },
     "eslint:fix": {
       "dependsOn": []
     },
     "vitest": {
       "cache": true,
-      "dependsOn": [],
-      "outputs": ["{projectRoot}/coverage"]
+      "dependsOn": ["build"]
     },
     "vitest:ui": {
       "dependsOn": []
