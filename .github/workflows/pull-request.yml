@@ -31,5 +31,8 @@ jobs:
       - name: Dependencies
         run: npm ci
 
+      - name: NX SHAs
+        uses: nrwl/nx-set-shas@v4
+
       - name: Checks
         run: npx nx affected --target tsc,vitest,prettier,eslint,depcheck --base=origin/main --head=${{ github.sha }}

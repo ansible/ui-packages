@@ -18,25 +18,19 @@ jobs:
       id-token: write # needed for provenance data generation
     timeout-minutes: 10
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          filter: tree:0
 
-      - name: Setup Node.js
+      - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: npm
           registry-url: https://registry.npmjs.org/
 
-      - name: Install Dependencies
+      - name: Dependencies
         run: npm ci
 
-      - name: Print Environment Info
-        run: npx nx report
-      
       - name: Build
         run: npm run build
 
