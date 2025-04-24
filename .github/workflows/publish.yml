@@ -18,28 +18,28 @@ jobs:
       id-token: write # needed for provenance data generation
     timeout-minutes: 10
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: npm
           registry-url: https://registry.npmjs.org/
 
-      - name: Install Dependencies
+      - name: Dependencies
         run: npm ci
 
       - name: Build
         run: npm run build
 
-      - name: Configure Git User
+      - name: Git User
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Publish packages
+      - name: Publish
         run: npx nx release --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
