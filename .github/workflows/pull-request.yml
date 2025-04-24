@@ -16,23 +16,20 @@ jobs:
       pull-requests: write
     timeout-minutes: 10
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           filter: tree:0
           
-      - name: Setup Node.js
+      - name: Node.js
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: npm
 
-      - name: Install Dependencies
+      - name: Dependencies
         run: npm ci
 
-      - name: Build Packages
-        run: npx nx affected --target tsc,vitest,prettier,eslint,depcheck --base=origin/main --head=${{ github.sha }}
-
-      - name: Build Packages
+      - name: Checks
         run: npx nx affected --target tsc,vitest,prettier,eslint,depcheck --base=origin/main --head=${{ github.sha }}
