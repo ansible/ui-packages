@@ -1,3 +1,13 @@
+## 0.1.0 (2025-04-24)
+
+### 🚀 Features
+
+- ui-plugin-loader ([#7](https://github.com/ansible/ui-packages/pull/7))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.0.6 (2025-04-24)
 
 ### 🩹 Fixes
