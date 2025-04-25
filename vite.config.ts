@@ -22,6 +22,6 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     setupFiles: [path.resolve(__dirname, 'vitest.setup.ts')],
-    coverage: { exclude: ['**/dist/**'] },
+    coverage: { include: ['**/src/**'] },
   },
 } as UserConfig)

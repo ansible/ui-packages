@@ -17,7 +17,8 @@
     "arm64"
   ],
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "scripts": {
     "start": "nx show projects",

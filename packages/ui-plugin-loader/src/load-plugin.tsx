@@ -1,12 +1,21 @@
-import { isValidPlugin } from '@ansible/ui-plugin-sdk'
 import { getInstance, init } from '@module-federation/enhanced/runtime'
 
-export async function loadPlugin(pluginName: string, pluginUrl: string) {
+export async function loadPlugin({
+  pluginName,
+  pluginUrl,
+  lang = 'en',
+  locale = 'en-US',
+}: {
+  pluginName: string
+  pluginUrl: string
+  lang: string
+  locale: string
+}) {
   let entry = pluginUrl.endsWith('/') ? pluginUrl.slice(0, -1) : pluginUrl
   entry += '/mf-manifest.json'
   let federationHost = getInstance()
   if (!federationHost) {
-    federationHost = init({ name: '', remotes: [{ name: pluginName, entry }] })
+    federationHost = init({ name: 'remote-app', remotes: [{ name: pluginName, entry }] })
   } else {
     federationHost.registerRemotes([{ name: pluginName, entry }])
   }
@@ -15,8 +24,8 @@ export async function loadPlugin(pluginName: string, pluginUrl: string) {
     return null
   })
   if (typeof loadedRemote === 'object' && loadedRemote !== null && 'default' in loadedRemote) {
-    if (isValidPlugin(loadedRemote.default)) {
-      return loadedRemote.default
+    if (loadedRemote.default && typeof loadedRemote.default === 'function') {
+      return loadedRemote.default({ lang, locale })
     }
   }
   return new Error(`Invalid plugin: ${pluginName} from ${pluginUrl}`)
