@@ -1,9 +1,10 @@
 import { PluginRouter } from './PluginRouter'
+import { PluginInfo } from './PluginsContext'
 import { PluginsProvider } from './PluginsProvider'
 
-export function PluginApp({ title }: { title: string }) {
+export function PluginApp({ title, defaultPluginInfo }: { title: string; defaultPluginInfo?: PluginInfo }) {
   return (
-    <PluginsProvider>
+    <PluginsProvider defaultPluginInfo={defaultPluginInfo}>
       <PluginRouter title={title} />
     </PluginsProvider>
   )
