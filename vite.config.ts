@@ -8,12 +8,22 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      external: ['react', 'react-dom', '@module-federation/enhanced'],
+      external: [
+        '@module-federation/enhanced',
+        '@patternfly/react-core',
+        '@patternfly/react-icons',
+        'react',
+        'react-dom',
+        'react-router',
+      ],
       output: {
         globals: {
-          react: 'React',
-          'react-dom': 'ReactDom',
           '@module-federation/enhanced': 'ModuleFederationEnhanced',
+          '@patternfly/react-core': 'PatternFlyReactCore',
+          '@patternfly/react-icons': 'PatternFlyReactIcons',
+          'react-dom': 'ReactDom',
+          'react-router': 'ReactRouter',
+          react: 'React',
         },
       },
     },

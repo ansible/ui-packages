@@ -23,7 +23,7 @@
   "scripts": {
     "start": "nx show projects",
     "clean": "nx exec -- rm -rf dist && rm -rf .nx",
-    "reinstall": "nx exec -- rm -rf dist node_modules && rm -rf .nx node_modules package-lock.json && npm install",
+    "reinstall": "nx exec -- rm -rf dist node_modules && rm -rf .nx node_modules package-lock.json && npm install && npm run build",
     "build": "nx run-many --target build",
     "graph": "nx graph",
     "test": "nx run-many --target tsc,vitest,prettier,eslint,depcheck",

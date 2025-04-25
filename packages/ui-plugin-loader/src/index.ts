@@ -1,3 +1,7 @@
 export * from './load-plugin'
+export * from './PluginApp'
 export * from './PluginComponent'
+export * from './PluginNav'
+export * from './PluginNavItem'
 export * from './usePlugin'
+export * from './usePluginsNavItems'
