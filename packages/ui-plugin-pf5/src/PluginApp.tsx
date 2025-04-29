@@ -1,6 +1,5 @@
+import { PluginInfo, PluginsProvider } from '@ansible/ui-plugin-loader'
 import { PluginRouter } from './PluginRouter'
-import { PluginInfo } from './PluginsContext'
-import { PluginsProvider } from './PluginsProvider'
 
 export function PluginApp({ title, defaultPluginInfo }: { title: string; defaultPluginInfo?: PluginInfo }) {
   return (

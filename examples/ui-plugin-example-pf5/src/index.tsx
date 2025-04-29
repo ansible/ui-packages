@@ -2,7 +2,7 @@
 
 import '@patternfly/react-core/dist/styles/base.css'
 
-import { PluginApp } from '@ansible/ui-plugin-loader'
+import { PluginApp } from '@ansible/ui-plugin-pf5'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
