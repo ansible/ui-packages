@@ -11,8 +11,8 @@ and uses npm workspaces to automate scripts across workspaces.
 
 1. Prerequisites
 
-   - Node 20.x and up
-   - NPM 8.x and up
+   - Node `20.x` and up
+   - NPM `8.x` and up
 
 2. Clone Repository
 
@@ -26,23 +26,56 @@ and uses npm workspaces to automate scripts across workspaces.
    npm ci
    ```
 
-## Running Tests
+4. Run tests
 
-Tests for all the packages can be run from the CLI using
+   ```
+   npm test
+   ```
+
+## Development
+
+### Packages
+
+Packages are in the `packages` directory.
+
+When working with NPM packages, the packages can only be used by other packages after they have been built.
+
+We are using NX to manage the repo.
+NX supports having tasks depend on other tasks.
+Using this functionality, the `test` task and depends on the `build` task.
+The guarentees that the `build` happens before `test` which is important as the packages need to be built before they are used.
+
+There is a top level `watch` that should be used to keep package builds up-to-date while working with them.
 
 ```
-npm test
+npm run watch
 ```
 
-## Working with a specific packages
+### Examples
 
-Change to the directory containing the package you are interested in.
+Examples are in the `examples` directory.
+
+To run an example, change the the example directory and run `npm start`.
 
 ```
-cd packages/some-package
-npm test
+cd examples/ui-plugin-example
+npm start
 ```
 
-## Conventions
+### Conventions
 
-All commit messages should have a [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) formatted commit.
+All commit messages should have a [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) formatted commit. This allows `nx` to generate release notes and automatically increment the version and publish the packages.
+
+|             Name | Description                                   |
+| ---------------: | --------------------------------------------- |
+| BREAKING CHANGE: | Increments the `MAJOR` in Semantic Versioning |
+|            feat: | Increments the `MINOR` in Semantic Versioning |
+|             fix: | Increments the `PATCH` in Semantic Versioning |
+|           build: | Build                                         |
+|           chore: | Chores                                        |
+|              ci: | CICD                                          |
+|            docs: | Docs                                          |
+|           style: | Styling                                       |
+|        refactor: | Refactoring                                   |
+|            test: | Tests                                         |
+|            perf: | Performance                                   |
