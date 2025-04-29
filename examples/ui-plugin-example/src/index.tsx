@@ -1,3 +1,5 @@
+/* v8 ignore start */
+
 import '@patternfly/react-core/dist/styles/base.css'
 
 import { PluginApp } from '@ansible/ui-plugin-loader'
@@ -9,3 +11,5 @@ createRoot(document.getElementById('root')!).render(
     <PluginApp title="Plugin Example" defaultPluginInfo={{ name: 'remote-app', url: 'http://localhost:4173/' }} />
   </StrictMode>,
 )
+
+/* v8 ignore stop */

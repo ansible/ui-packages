@@ -26,7 +26,8 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "vite build && tsc --noEmit false --emitDeclarationOnly --declaration --outDir dist",
+    "build": "vite build",
+    "watch": "vite build --watch",
     "test": "concurrently npm:tsc npm:eslint npm:prettier npm:depcheck -c auto",
     "tsc": "tsc --noEmit",
     "eslint": "eslint --max-warnings 0 --report-unused-disable-directives src",
