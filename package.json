@@ -17,13 +17,15 @@
     "arm64"
   ],
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "scripts": {
     "start": "nx show projects",
     "clean": "nx exec -- rm -rf dist && rm -rf .nx",
-    "reinstall": "nx exec -- rm -rf dist node_modules && rm -rf .nx node_modules package-lock.json && npm install",
+    "reinstall": "nx exec -- rm -rf dist node_modules && rm -rf .nx node_modules package-lock.json && npm install && npm run build",
     "build": "nx run-many --target build",
+    "watch": "nx run-many --target watch",
     "graph": "nx graph",
     "test": "nx run-many --target tsc,vitest,prettier,eslint,depcheck",
     "tsc": "nx run-many --target tsc",
@@ -42,7 +44,7 @@
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint/js": "^9.25.1",
-    "@nx/js": "^20.8.0",
+    "@nx/js": "^20.8.1",
     "@swc-node/register": "~1.10.10",
     "@swc/core": "~1.11.22",
     "@swc/helpers": "~0.5.17",
@@ -60,11 +62,12 @@
     "happy-dom": "^17.4.4",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.1",
-    "nx": "^20.8.0",
+    "nx": "^20.8.1",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.31.0",
     "vite": "^6.3.3",
+    "vite-plugin-dts": "^4.5.3",
     "vitest": "^3.1.2"
   },
   "lint-staged": {

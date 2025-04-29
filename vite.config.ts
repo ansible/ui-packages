@@ -2,18 +2,29 @@
 import react from '@vitejs/plugin-react-swc'
 import * as path from 'path'
 import { defineConfig, UserConfig } from 'vite'
+import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), dts()],
   build: {
     rollupOptions: {
-      external: ['react', 'react-dom', '@module-federation/enhanced'],
+      external: [
+        '@module-federation/enhanced',
+        '@patternfly/react-core',
+        '@patternfly/react-icons',
+        'react',
+        'react-dom',
+        'react-router',
+      ],
       output: {
         globals: {
-          react: 'React',
-          'react-dom': 'ReactDom',
           '@module-federation/enhanced': 'ModuleFederationEnhanced',
+          '@patternfly/react-core': 'PatternFlyReactCore',
+          '@patternfly/react-icons': 'PatternFlyReactIcons',
+          'react-dom': 'ReactDom',
+          'react-router': 'ReactRouter',
+          react: 'React',
         },
       },
     },
@@ -22,6 +33,6 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     setupFiles: [path.resolve(__dirname, 'vitest.setup.ts')],
-    coverage: { exclude: ['**/dist/**'] },
+    coverage: { include: ['**/src/**'] },
   },
 } as UserConfig)
