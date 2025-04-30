@@ -1,3 +1,17 @@
+## 0.2.2 (2025-04-30)
+
+### 🩹 Fixes
+
+- module federation ([3a361dd](https://github.com/ansible/ui-packages/commit/3a361dd))
+
+### 🧱 Updated Dependencies
+
+- Updated @ansible/ui-plugin-sdk to 0.2.2
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.2.1 (2025-04-30)
 
 ### 🩹 Fixes
