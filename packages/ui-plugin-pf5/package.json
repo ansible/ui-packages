@@ -39,12 +39,12 @@
     "depcheck": "npx depcheck"
   },
   "peerDependencies": {
-    "@module-federation/enhanced": "^0.13.1",
-    "@patternfly/react-core": "^5.4.14",
-    "@patternfly/react-icons": "^5.4.2",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "react-router": "^7.5.2"
+    "@module-federation/enhanced": "^0.13",
+    "@patternfly/react-core": "^5.4",
+    "@patternfly/react-icons": "^5.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-router": "^7.5"
   },
   "devDependencies": {
     "@ansible/ui-plugin-loader": "^0.2.1",
