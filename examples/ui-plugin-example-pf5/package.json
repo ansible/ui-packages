@@ -1,5 +1,6 @@
 {
   "name": "@ansible/ui-plugin-example-pf5",
+  "version": "0.0.0",
   "description": "Ansible UI Plugin Example",
   "author": "The Red Hat Ansible Team",
   "type": "module",
