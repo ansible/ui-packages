@@ -15,9 +15,15 @@ export async function loadPlugin({
   entry += '/mf-manifest.json'
   let federationHost = getInstance()
   if (!federationHost) {
-    federationHost = init({ name: 'remote-app', remotes: [{ name: pluginName, entry }] })
+    federationHost = init({ name: 'remote-app', remotes: [{ name: pluginName, entry, shareScope: 'default' }] })
   } else {
-    federationHost.registerRemotes([{ name: pluginName, entry }])
+    federationHost.registerRemotes([
+      {
+        name: pluginName,
+        entry,
+        shareScope: 'default',
+      },
+    ])
   }
   const loadedRemote = await federationHost.loadRemote(`${pluginName}/ui-plugin`).catch((e) => {
     console.error('Error loading remote:', e)

@@ -4,38 +4,35 @@ import { federation } from '@module-federation/vite'
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
 import baseConfig from '../../vite.config'
+import { dependencies } from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   ...baseConfig,
-  base: 'http://localhost:4173',
-  server: {
-    origin: 'http://localhost:4173',
-    port: 4173,
-  },
+  // base: './',
+  server: { origin: 'http://localhost:4173', port: 4173 },
   plugins: [
     react(),
     process.env.NODE_ENV !== 'test' &&
       federation({
         name: 'remote-app',
         manifest: true,
-        remotes: {
-          esm_remote: {
-            type: 'module',
-            name: 'esm_remote',
-            entry: 'https://[...]/remoteEntry.js',
-          },
-          var_remote: 'var_remote@https://[...]/remoteEntry.js',
-        },
         exposes: {
           './ExamplePage': './src/ExamplePage',
           './ui-plugin': './src/ExamplePlugin',
         },
+        shareScope: 'default',
         shared: {
           react: {
+            requiredVersion: dependencies.react,
             singleton: true,
           },
-          'react/': {
+          'react-dom': {
+            requiredVersion: dependencies['react-dom'],
+            singleton: true,
+          },
+          '@patternfly/react-core': {
+            requiredVersion: dependencies['@patternfly/react-core'],
             singleton: true,
           },
         },
