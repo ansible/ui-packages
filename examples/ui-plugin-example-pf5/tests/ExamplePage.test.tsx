@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import ExamplePage from '../src/ExamplePage1'
+import ExamplePage from '../src/ExamplePage'
 
 describe('ExamplePage', () => {
   it('renders the ExamplePage component', () => {

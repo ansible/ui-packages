@@ -58,7 +58,7 @@ Examples are in the `examples` directory.
 To run an example, change the the example directory and run `npm start`.
 
 ```
-cd examples/ui-plugin-example
+cd examples/ui-plugin-example-pf5
 npm start
 ```
 

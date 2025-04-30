@@ -1,4 +1,5 @@
 {
+  "parallel": 8,
   "release": {
     "projects": ["packages/*"],
     "projectsRelationship": "independent",

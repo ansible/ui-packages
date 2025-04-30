@@ -9,7 +9,7 @@ export default defineConfig({
   build: {
     ...baseConfig.build,
     lib: {
-      name: '@ansible/ui-plugin-loader',
+      name: '@ansible/ui-plugin-pf5',
       entry: 'src/index.ts',
       fileName: 'index',
     },

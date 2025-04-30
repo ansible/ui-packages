@@ -1,7 +1,6 @@
+import { usePlugins, usePluginsNavItems } from '@ansible/ui-plugin-loader'
 import { Nav, NavList } from '@patternfly/react-core'
-import { PluginNavItems } from './PluginNavItem'
-import { usePlugins } from './PluginsContext'
-import { usePluginsNavItems } from './usePluginsNavItems'
+import { PluginNavItems } from './PluginNavItems'
 
 export function PluginNav() {
   const { plugins } = usePlugins()
