@@ -1,3 +1,13 @@
+## 0.2.1 (2025-04-30)
+
+### 🩹 Fixes
+
+- upgrade dependencies ([#28](https://github.com/ansible/ui-packages/pull/28))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.2.0 (2025-04-30)
 
 ### 🚀 Features

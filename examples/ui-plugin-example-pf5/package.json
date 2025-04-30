@@ -1,6 +1,6 @@
 {
   "name": "@ansible/ui-plugin-example-pf5",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "description": "Ansible UI Plugin Example",
   "author": "The Red Hat Ansible Team",
   "type": "module",
@@ -28,8 +28,8 @@
     "depcheck": "npx depcheck --oneline --ignore-patterns=.__mf__temp,dist"
   },
   "dependencies": {
-    "@ansible/ui-plugin-pf5": "^0.2.0",
-    "@ansible/ui-plugin-sdk": "^0.2.0",
+    "@ansible/ui-plugin-pf5": "^0.2.1",
+    "@ansible/ui-plugin-sdk": "^0.2.1",
     "@module-federation/vite": "^1.2.7",
     "@patternfly/react-core": "^5.4.14",
     "@vitejs/plugin-react-swc": "^3.9.0",
