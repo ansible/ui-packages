@@ -28,7 +28,7 @@ export default defineConfig({
           var_remote: 'var_remote@https://[...]/remoteEntry.js',
         },
         exposes: {
-          './ExamplePage': './src/ExamplePage1',
+          './ExamplePage': './src/ExamplePage',
           './ui-plugin': './src/ExamplePlugin',
         },
         shared: {

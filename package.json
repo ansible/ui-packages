@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "start": "nx show projects",
-    "clean": "nx exec -- rm -rf dist && rm -rf .nx",
+    "clean": "nx exec -- rm -rf dist .__mf__temp && rm -rf .nx .__mf__temp",
     "reinstall": "nx exec -- rm -rf dist node_modules && rm -rf .nx node_modules package-lock.json && npm install && npm run build",
     "build": "nx run-many --target build",
     "watch": "nx run-many --target watch",

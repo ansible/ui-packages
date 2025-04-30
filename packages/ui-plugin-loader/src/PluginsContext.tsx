@@ -14,6 +14,7 @@ export interface PluginsState {
   removePlugin: (pluginName: string) => void
 }
 
+/* v8 ignore start */
 export const PluginsContext = createContext<PluginsState>({
   plugins: [],
   pluginInfo: [],
@@ -24,6 +25,7 @@ export const PluginsContext = createContext<PluginsState>({
     console.warn('removePlugin not implemented')
   },
 })
+/* v8 ignore end */
 
 export function usePlugins() {
   return useContext(PluginsContext)

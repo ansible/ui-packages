@@ -40,3 +40,4 @@
 - Use `screen` and `userEvent` from `@testing-library/react` for UI interaction
 - Clean up side effects with `beforeEach`/`afterEach` where appropriate
 - Mock external dependencies with Vitest’s mocking utilities (`vi.mock`)
+- Use `vi.fn` over `jest.fn`
