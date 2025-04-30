@@ -1,3 +1,13 @@
+## 0.2.2 (2025-04-30)
+
+### 🩹 Fixes
+
+- peerDependencies versions ([702e4f0](https://github.com/ansible/ui-packages/commit/702e4f0))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.2.1 (2025-04-30)
 
 ### 🩹 Fixes
