@@ -30,7 +30,7 @@
   "dependencies": {
     "@ansible/ui-plugin-pf5": "^0.2.0",
     "@ansible/ui-plugin-sdk": "^0.2.0",
-    "@module-federation/vite": "^1.2.6",
+    "@module-federation/vite": "^1.2.7",
     "@patternfly/react-core": "^5.4.14",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "react": "^18.3.1",
