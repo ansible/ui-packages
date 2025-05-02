@@ -14,9 +14,10 @@
     "directory": "examples/ui-plugin-example-pf5"
   },
   "scripts": {
-    "start": "vite --open",
-    "clean": "rm -rf dist .__mf__temp",
+    "start": "npm run clean && vite --open",
+    "clean": "rm -rf node_modules/.vite node_modules/.vite-temp dist .__mf__temp",
     "build": "vite build",
+    "preview": "npm run build && vite preview",
     "test": "concurrently npm:tsc npm:eslint npm:prettier npm:depcheck -c auto",
     "tsc": "tsc --noEmit",
     "eslint": "eslint --max-warnings 0 --report-unused-disable-directives src",
@@ -37,7 +38,6 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@testing-library/react": "^13.4.0",
     "concurrently": "^9.1.2",
     "vite": "^6.3.4",
     "vitest": "^3.1.2"

@@ -1,49 +1,38 @@
 /// <reference types="vitest" />
-
 import { federation } from '@module-federation/vite'
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig } from 'vite'
-import baseConfig from '../../vite.config'
-import { dependencies } from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  ...baseConfig,
-  // base: './',
-  server: { origin: 'http://localhost:4173', port: 4173 },
+  base: './',
+  server: { port: 4173 },
   plugins: [
     react(),
     process.env.NODE_ENV !== 'test' &&
       federation({
-        name: 'remote-app',
-        manifest: true,
         exposes: {
-          './ExamplePage': './src/ExamplePage',
           './ui-plugin': './src/ExamplePlugin',
+          './ExamplePage': './src/ExamplePage',
         },
-        shareScope: 'default',
-        shared: {
-          react: {
-            requiredVersion: dependencies.react,
-            singleton: true,
-          },
-          'react-dom': {
-            requiredVersion: dependencies['react-dom'],
-            singleton: true,
-          },
-          '@patternfly/react-core': {
-            requiredVersion: dependencies['@patternfly/react-core'],
-            singleton: true,
-          },
-        },
+        name: 'ui-plugin', // must be 'ui-plugin' for shared scope
+        filename: 'ui-plugin.js',
+        shared: [
+          'react',
+          'react-dom',
+          '@patternfly/patternfly',
+          '@patternfly/quickstarts',
+          '@patternfly/react-charts',
+          '@patternfly/react-core',
+          '@patternfly/react-icons',
+          '@patternfly/react-styles',
+          '@patternfly/react-table',
+          '@patternfly/react-templates',
+          '@patternfly/react-topology',
+        ],
       }),
   ],
   build: {
-    ...baseConfig.build,
-    target: 'chrome89',
-    manifest: false,
-  },
-  optimizeDeps: {
-    exclude: ['__federation__'],
+    target: 'chrome89', // needed for module federation
   },
 })

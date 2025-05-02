@@ -1,38 +1,21 @@
+import { isValidPlugin } from '@ansible/ui-plugin-sdk'
 import { getInstance, init } from '@module-federation/enhanced/runtime'
 
-export async function loadPlugin({
-  pluginName,
-  pluginUrl,
-  lang = 'en',
-  locale = 'en-US',
-}: {
-  pluginName: string
-  pluginUrl: string
-  lang: string
-  locale: string
-}) {
-  let entry = pluginUrl.endsWith('/') ? pluginUrl.slice(0, -1) : pluginUrl
-  entry += '/mf-manifest.json'
+export async function loadPlugin({ name, entry, lang = 'en' }: { name: string; entry: string; lang: string }) {
   let federationHost = getInstance()
   if (!federationHost) {
-    federationHost = init({ name: 'remote-app', remotes: [{ name: pluginName, entry, shareScope: 'default' }] })
+    federationHost = init({ name: 'ui-plugin', remotes: [{ name, entry, type: 'module' }] })
   } else {
-    federationHost.registerRemotes([
-      {
-        name: pluginName,
-        entry,
-        shareScope: 'default',
-      },
-    ])
+    federationHost.registerRemotes([{ name, entry, type: 'module' }])
   }
-  const loadedRemote = await federationHost.loadRemote(`${pluginName}/ui-plugin`).catch((e) => {
-    console.error('Error loading remote:', e)
-    return null
-  })
+  const loadedRemote = await federationHost.loadRemote(`${name}/ui-plugin`)
   if (typeof loadedRemote === 'object' && loadedRemote !== null && 'default' in loadedRemote) {
     if (loadedRemote.default && typeof loadedRemote.default === 'function') {
-      return loadedRemote.default({ lang, locale })
+      const plugin = loadedRemote.default({ lang })
+      if (isValidPlugin(plugin)) {
+        return plugin
+      }
     }
   }
-  return new Error(`Invalid plugin: ${pluginName} from ${pluginUrl}`)
+  throw new Error(`Invalid plugin: ${name} from ${entry}`)
 }

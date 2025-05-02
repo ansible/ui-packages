@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react'
 
 export interface PluginInfo {
   name: string
-  url: string
+  entry: string
   promise?: Promise<Plugin | void>
 }
 
@@ -19,10 +19,10 @@ export const PluginsContext = createContext<PluginsState>({
   plugins: [],
   pluginInfo: [],
   addPlugin: (_pluginInfo: PluginInfo) => {
-    console.warn('addPlugin not implemented')
+    console.warn('addPlugin called without a provider')
   },
   removePlugin: (_pluginName: string) => {
-    console.warn('removePlugin not implemented')
+    console.warn('removePlugin called without a provider')
   },
 })
 /* v8 ignore end */

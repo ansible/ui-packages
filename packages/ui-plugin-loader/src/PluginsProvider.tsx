@@ -19,6 +19,7 @@ export function PluginsProvider({
       return newPluginInfo
     })
   }, [])
+
   const removePlugin = useCallback((pluginName: string) => {
     setPluginInfo((prevState) => {
       const newPluginInfo = prevState.filter((plugin) => plugin.name !== pluginName)
@@ -33,23 +34,26 @@ export function PluginsProvider({
       for (const pluginInfo of newPluginInfoArray) {
         if (!pluginInfo.promise) {
           pluginInfo.promise = loadPlugin({
-            pluginName: pluginInfo.name,
-            pluginUrl: pluginInfo.url,
+            name: pluginInfo.name,
+            entry: pluginInfo.entry,
             lang: 'en',
-            locale: 'en',
-          }).then((plugin) => {
-            setPlugins((prevState) => {
-              const updatedPlugins = [...prevState]
-              // const index = updatedPlugins.findIndex((p) => p.name === plugin.name)
-              const index = -1
-              if (index !== -1) {
-                updatedPlugins[index] = plugin
-              } else {
-                updatedPlugins.push(plugin)
-              }
-              return updatedPlugins
-            })
           })
+            .then((plugin) => {
+              console.log('loaded plugin', plugin)
+              setPlugins((prevState) => {
+                const updatedPlugins = [...prevState]
+                const index = updatedPlugins.findIndex((p) => p.id === plugin.id)
+                if (index !== -1) {
+                  updatedPlugins[index] = plugin
+                } else {
+                  updatedPlugins.push(plugin)
+                }
+                return updatedPlugins
+              })
+            })
+            .catch((e) => {
+              console.error('Error loading plugin:', e)
+            })
           updated = true
         }
       }

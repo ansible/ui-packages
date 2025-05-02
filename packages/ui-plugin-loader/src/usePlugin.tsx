@@ -1,28 +1,20 @@
-import { isValidPlugin, Plugin } from '@ansible/ui-plugin-sdk'
+import { Plugin } from '@ansible/ui-plugin-sdk'
 import { useEffect, useState } from 'react'
 import { loadPlugin } from './load-plugin'
 
-export function usePlugin(pluginName: string, pluginUrl: string) {
+export function usePlugin(name: string, entry: string) {
   const [plugin, setPlugin] = useState<Plugin | null>(null)
   const [error, setError] = useState<Error | null>(null)
   useEffect(() => {
     setError(null)
-    loadPlugin({
-      pluginName,
-      pluginUrl,
-      lang: navigator.language,
-      locale: navigator.language,
-    })
+    loadPlugin({ name, entry, lang: navigator.language })
       .then((plugin) => {
-        if (isValidPlugin(plugin)) {
-          setPlugin(plugin)
-        } else {
-          setError(new Error(`UI Plugin is of type ${JSON.stringify(plugin)}, ${plugin === null} expected 'ui-plugin'`))
-        }
+        setPlugin(plugin)
       })
       .catch((error) => {
+        setPlugin(null)
         setError(error)
       })
-  }, [pluginName, pluginUrl])
+  }, [name, entry])
   return { plugin, error }
 }
