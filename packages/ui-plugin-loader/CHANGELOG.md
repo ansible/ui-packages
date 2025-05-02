@@ -1,3 +1,13 @@
+## 0.2.5 (2025-05-02)
+
+### 🩹 Fixes
+
+- error handling ([#32](https://github.com/ansible/ui-packages/pull/32))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.2.4 (2025-05-02)
 
 ### 🩹 Fixes
