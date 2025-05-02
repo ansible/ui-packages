@@ -19,6 +19,7 @@ export function usePluginsNavItems(plugins: Plugin[]): IPluginNavItem[] {
           path: navIntegration.path,
           label: navIntegration.label,
           fullPath: navIntegration.path,
+          pluginName: plugin.id,
         }
         if (navIntegration.component) {
           navItem.componentName = navIntegration.component
