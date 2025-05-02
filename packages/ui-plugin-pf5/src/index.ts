@@ -1,4 +1,6 @@
 export * from './PluginApp'
+export * from './PluginErrorComponent'
+export * from './PluginLoadingComponent'
 export * from './PluginNav'
 export * from './PluginNavItem'
 export * from './PluginNavItems'

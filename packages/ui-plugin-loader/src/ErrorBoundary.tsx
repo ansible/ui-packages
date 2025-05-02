@@ -1,4 +1,4 @@
-import { Component, ReactNode } from 'react'
+import { Component, createContext, ReactNode } from 'react'
 
 interface Props {
   errorComponent?: ReactNode
@@ -6,20 +6,28 @@ interface Props {
 }
 
 interface State {
-  errorMessage: string | null
+  error: Error | null
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  public state: State = { errorMessage: null }
+  public state: State = { error: null }
 
   public static getDerivedStateFromError(error: Error): State {
-    return { errorMessage: error.message }
+    return { error }
   }
 
   public render() {
-    if (this.state.errorMessage) {
-      return this.props.errorComponent ?? this.state.errorMessage
+    if (this.state.error) {
+      return this.props.errorComponent ? (
+        <ErrorBoundaryContext.Provider value={this.state.error}>
+          {this.props.errorComponent}
+        </ErrorBoundaryContext.Provider>
+      ) : (
+        this.state.error.message
+      )
     }
     return this.props.children
   }
 }
+
+export const ErrorBoundaryContext = createContext<Error | null>(null)

@@ -4,5 +4,6 @@ export interface IPluginNavItem {
   path: string
   fullPath: string
   children?: IPluginNavItem[]
+  pluginName: string
   componentName?: string
 }
