@@ -42,7 +42,7 @@ describe('PluginsContext', () => {
       ),
     })
 
-    const pluginInfo: PluginInfo = { name: 'TestPlugin', url: 'http://test.com' }
+    const pluginInfo: PluginInfo = { name: 'TestPlugin', entry: 'http://test.com' }
     act(() => {
       result.current.addPlugin(pluginInfo)
     })

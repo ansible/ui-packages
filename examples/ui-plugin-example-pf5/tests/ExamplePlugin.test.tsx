@@ -4,7 +4,7 @@ import ExamplePlugin from '../src/ExamplePlugin'
 
 describe('ExamplePlugin', () => {
   it('should return the correct plugin configuration', () => {
-    const plugin = ExamplePlugin({ lang: 'en', locale: 'en-us' })
+    const plugin = ExamplePlugin({ lang: 'en' })
     expect(isValidPlugin(plugin)).toBe(true)
   })
 })

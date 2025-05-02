@@ -8,7 +8,13 @@ import { createRoot } from 'react-dom/client'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PluginApp title="Plugin Example" defaultPluginInfo={{ name: 'remote-app', url: 'http://localhost:4173/' }} />
+    <PluginApp
+      title="Plugin Example"
+      defaultPluginInfo={{
+        name: 'remote-app',
+        entry: 'http://localhost:4173/ui-plugin.js',
+      }}
+    />
   </StrictMode>,
 )
 
