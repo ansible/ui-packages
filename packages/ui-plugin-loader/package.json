@@ -1,6 +1,6 @@
 {
   "name": "@ansible/ui-plugin-loader",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Ansible UI Plugin Loader",
   "author": "The Red Hat Ansible Team",
   "license": "Apache-2.0",
@@ -45,7 +45,7 @@
     "react-router": "^7.5.3"
   },
   "devDependencies": {
-    "@ansible/ui-plugin-sdk": "0.2.2",
+    "@ansible/ui-plugin-sdk": "0.2.3",
     "@module-federation/enhanced": "^0.13.1",
     "@testing-library/react": "^13.4.0",
     "@types/react": "^18.3.20",

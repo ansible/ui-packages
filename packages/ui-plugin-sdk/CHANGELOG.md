@@ -1,3 +1,14 @@
+## 0.2.3 (2025-05-02)
+
+### 🩹 Fixes
+
+- plugin loading ([#29](https://github.com/ansible/ui-packages/pull/29))
+- vite-plugin-externalize-deps ([#30](https://github.com/ansible/ui-packages/pull/30))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.2.2 (2025-04-30)
 
 ### 🩹 Fixes
