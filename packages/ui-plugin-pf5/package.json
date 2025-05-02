@@ -1,6 +1,6 @@
 {
   "name": "@ansible/ui-plugin-pf5",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Ansible UI Plugin PF5",
   "author": "The Red Hat Ansible Team",
   "license": "Apache-2.0",
