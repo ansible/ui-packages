@@ -33,6 +33,7 @@ export default defineConfig({
       }),
   ],
   build: {
+    sourcemap: true,
     target: 'chrome89', // needed for module federation
   },
 })

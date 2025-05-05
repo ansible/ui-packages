@@ -19,6 +19,18 @@ export interface Navigation {
   path: string
   component?: string
   parentId?: string
+  priority?: number
+}
+
+export enum NavigationPriority {
+  Highest = 500,
+  High = 400,
+  MediumHigh = 300,
+  Medium = 200,
+  MediumLow = 100,
+  Default = 0,
+  Low = -200,
+  Lowest = -300,
 }
 
 /**
@@ -59,6 +71,9 @@ export function isValidNavigation(integration: unknown): integration is Navigati
     return false
   }
   if ('parentId' in integration && typeof integration.parentId !== 'string') {
+    return false
+  }
+  if ('priority' in integration && typeof integration.priority !== 'number') {
     return false
   }
   return true
