@@ -1,3 +1,13 @@
+## 0.2.7 (2025-05-05)
+
+### 🩹 Fixes
+
+- add NavigationPriority ([#37](https://github.com/ansible/ui-packages/pull/37))
+
+### ❤️ Thank You
+
+- James Talton @jamestalton
+
 ## 0.2.6 (2025-05-02)
 
 ### 🩹 Fixes
