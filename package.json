@@ -41,7 +41,7 @@
     "lint-staged": "lint-staged"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.8.0",
+    "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint/js": "^9.26.0",
     "@nx/js": "^20.8.1",
