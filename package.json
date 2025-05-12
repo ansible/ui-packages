@@ -61,7 +61,7 @@
     "globals": "^16.0.0",
     "happy-dom": "^17.4.6",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.1",
+    "lint-staged": "^15.5.2",
     "nx": "^20.8.1",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
