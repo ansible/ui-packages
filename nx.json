@@ -1,5 +1,8 @@
 {
   "parallel": 8,
+  "tui": {
+    "enabled": false
+  },
   "release": {
     "projects": ["packages/*"],
     "projectsRelationship": "independent",
