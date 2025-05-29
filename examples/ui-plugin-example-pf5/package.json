@@ -31,15 +31,15 @@
   "dependencies": {
     "@ansible/ui-plugin-pf5": "^0.2.7",
     "@ansible/ui-plugin-sdk": "^0.2.6",
-    "@module-federation/vite": "^1.2.7",
+    "@module-federation/vite": "^1.4.0",
     "@patternfly/react-core": "^5.4.14",
-    "@vitejs/plugin-react-swc": "^3.9.0",
+    "@vitejs/plugin-react-swc": "^3.10.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
     "vite": "^6.3.5",
-    "vitest": "^3.1.3"
+    "vitest": "^3.1.4"
   }
 }

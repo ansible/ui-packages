@@ -7,18 +7,22 @@ export default function ExamplePlugin(options: PluginOptions): Plugin {
     version: '0.0.1',
     integrations: [
       {
-        id: 'group-1',
+        // Example of a navigation integration
+        id: 'example-ui-plugin-nav',
         type: IntegrationType.Navigation,
-        label: 'UI Example Plugin',
-        path: 'group-1',
+        label: 'Example UI Plugin',
+        path: 'example-plugin',
       },
       {
-        id: 'page-1',
+        // Example of a navigation integration
+        // this is a child of the previous one
+        // and loads a React component from the plugin
+        id: 'example-ui-plugin-page',
         type: IntegrationType.Navigation,
         label: 'Example Page',
         component: 'ExamplePage',
-        parentId: 'group-1',
-        path: 'page-1',
+        parentId: 'example-ui-plugin-nav',
+        path: 'example-ui-plugin-page',
       },
     ],
   }

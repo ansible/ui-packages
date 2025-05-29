@@ -6,7 +6,15 @@ import { defineConfig } from 'vite'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
-  server: { port: 4173 },
+  server: {
+    port: 4173,
+    proxy: {
+      '/api': {
+        target: 'https://thronesapi.com/',
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [
     react(),
     process.env.NODE_ENV !== 'test' &&
@@ -20,15 +28,10 @@ export default defineConfig({
         shared: [
           'react',
           'react-dom',
-          '@patternfly/patternfly',
-          '@patternfly/quickstarts',
-          '@patternfly/react-charts',
           '@patternfly/react-core',
           '@patternfly/react-icons',
           '@patternfly/react-styles',
           '@patternfly/react-table',
-          '@patternfly/react-templates',
-          '@patternfly/react-topology',
         ],
       }),
   ],
