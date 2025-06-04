@@ -49,6 +49,6 @@
     "@testing-library/react": "^13.4.0",
     "concurrently": "^9.1.2",
     "vite": "^6.3.5",
-    "vitest": "^3.1.4"
+    "vitest": "^3.2.1"
   }
 }
