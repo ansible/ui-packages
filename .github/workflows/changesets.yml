@@ -1,21 +1,21 @@
-name: Publish
+name: Changesets
 
 on:
   push:
     branches:
       - main
-  
+
 concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-  # https://nx.dev/recipes/nx-release/publish-in-ci-cd
-  publish:
-    name: Publish
+  changesets:
+    name: Changesets
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write # needed for provenance data generation
+      id-token: write
+      pull-requests: write
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -23,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0
           filter: tree:0
-          
+
       - name: Node.js
         uses: actions/setup-node@v4
         with:
@@ -34,17 +34,11 @@ jobs:
       - name: Dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
-
-      - name: Configure Git User
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Publish packages
-        run: npx nx release --yes
+      - name: Create release pull request or publish packages
+        uses: changesets/action@v2.1.2
+        with:
+          publish-script: npm run changeset:publish
+          create-github-releases: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
