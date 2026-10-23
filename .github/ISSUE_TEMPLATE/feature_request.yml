@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest an improvement to a package in this workspace.
+title: '[Feature]: '
+body:
+  - type: input
+    id: package
+    attributes:
+      label: Package
+      description: Which package should this change affect?
+      placeholder: '@ansible/package-name'
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem or need should this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the behavior you would like.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe any alternatives or workarounds you considered.
+    validations:
+      required: false
