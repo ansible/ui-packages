@@ -1,6 +1,6 @@
 {
   "name": "@ansible/md-link-lint",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Check local file and heading links in Markdown files in Git repositories.",
   "license": "Apache-2.0",
   "bin": {
