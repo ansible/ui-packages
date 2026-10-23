@@ -9,12 +9,11 @@ concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-  changesets:
-    name: Changesets
+  version:
+    name: Changeset version pull request
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write
       pull-requests: write
     timeout-minutes: 10
     steps:
@@ -29,16 +28,17 @@ jobs:
         with:
           node-version: lts/*
           cache: npm
-          registry-url: https://registry.npmjs.org/
 
       - name: Dependencies
         run: npm ci
 
-      - name: Create release pull request or publish packages
-        uses: changesets/action@v2.1.2
+      - name: Select Changesets mode
+        id: mode
+        uses: changesets/action/select-mode@v2.1.2
+
+      - name: Create or update version pull request
+        if: steps.mode.outputs.mode == 'version'
+        uses: changesets/action/version@v2.1.2
         with:
-          publish-script: npm run changeset:publish
-          create-github-releases: true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+          script: npx changeset version
+          push-with-git-cli: false
