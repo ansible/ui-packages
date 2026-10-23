@@ -1,0 +1,66 @@
+{
+  "name": "@ansible/eslint-plugin",
+  "version": "0.0.0",
+  "description": "Portable custom ESLint rules for Ansible frontend packages",
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "flat-config",
+    "no-barrel-files",
+    "no-nested-component-definitions",
+    "require-function-jsdoc",
+    "typescript"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ansible/ui-packages.git",
+    "directory": "packages/eslint-plugin"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.js",
+      "default": "./dist/plugin.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc --build tsconfig.json --force",
+    "attw": "attw",
+    "lint": "npm run eslint",
+    "test": "npm run build && vitest run --environment node",
+    "tsc": "tsc -p tsconfig.test.json --noEmit",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm test",
+    "eslint": "cd ../.. && node --experimental-strip-types packages/eslint-plugin/node_modules/eslint/bin/eslint.js --config packages/eslint-plugin/eslint.config.js packages/eslint-plugin",
+    "vitest": "vitest run --environment node",
+    "prettier": "prettier --check README.md eslint-rules src tests package.json tsconfig.json tsconfig.test.json eslint.config.js .attw.json",
+    "depcheck": "depcheck --ignores @ansible/eslint-plugin"
+  },
+  "dependencies": {
+    "@typescript-eslint/types": "^8.70.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.4",
+    "@typescript-eslint/parser": "8.70.1",
+    "eslint": "10.11.0",
+    "typescript": "6.0.3",
+    "vitest": "4.1.12",
+    "@arethetypeswrong/cli": "0.18.5"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0"
+  },
+  "engines": {
+    "node": "^22.23.4 || >=24"
+  },
+  "author": "The Red Hat Ansible Team"
+}
