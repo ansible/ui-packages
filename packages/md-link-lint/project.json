@@ -6,7 +6,7 @@
       "dependsOn": ["build"],
       "cache": true,
       "options": {
-        "command": "node packages/md-link-lint/dist/cli.js --exclude 'packages/md-link-lint/test/fixtures/**'"
+        "command": "node packages/md-link-lint/dist/cli.js --exclude 'packages/md-link-lint/tests/fixtures/**'"
       }
     }
   }
