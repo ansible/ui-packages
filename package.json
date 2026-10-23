@@ -43,8 +43,9 @@
     "changesets:version": "changeset version",
     "prepare": "husky",
     "lint-staged": "lint-staged",
-    "static": "nx run-many --target tsc,prettier,eslint,depcheck",
-    "attw": "nx run-many --target attw"
+    "static": "nx run-many --target tsc,prettier,eslint,depcheck,linkcheck",
+    "attw": "nx run-many --target attw",
+    "linkcheck": "nx run @ansible/md-link-lint:linkcheck"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
