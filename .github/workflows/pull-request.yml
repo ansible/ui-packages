@@ -36,7 +36,7 @@ jobs:
         run: npm ci
 
       - name: NX SHAs
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@v5
 
       - name: Checks
         run: npx nx affected --target tsc,vitest,prettier,eslint,depcheck --base=origin/main --head=${{ github.sha }}
