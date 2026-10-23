@@ -4,6 +4,8 @@ Monorepo containing public npm packages and developer tools from the Red Hat Ans
 
 Packages are in the `packages` directory.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development and pull request guidance.
+
 The root of the project is generic containing shared configurations,
 and uses npm workspaces to automate scripts across workspaces.
 
