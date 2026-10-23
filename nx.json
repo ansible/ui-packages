@@ -75,5 +75,8 @@
         }
       }
     }
-  ]
+  ],
+  "affected": {
+    "legacy": true
+  }
 }
