@@ -3,18 +3,6 @@
   "tui": {
     "enabled": false
   },
-  "release": {
-    "projects": ["packages/*"],
-    "projectsRelationship": "independent",
-    "changelog": {
-      "projectChangelogs": {
-        "createRelease": "github"
-      }
-    },
-    "version": {
-      "conventionalCommits": true
-    }
-  },
   "targetDefaults": {
     "start": {
       "dependsOn": []

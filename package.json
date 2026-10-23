@@ -37,10 +37,12 @@
     "prettier:fix": "nx run-many --target prettier:fix",
     "depcheck": "nx run-many --target depcheck",
     "fix": "nx run-many --target prettier:fix,eslint:fix",
+    "changeset": "changeset",
     "prepare": "husky",
     "lint-staged": "lint-staged"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.3",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.28.0",

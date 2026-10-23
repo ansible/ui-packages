@@ -62,20 +62,10 @@ cd examples/ui-plugin-example-pf5
 npm start
 ```
 
-### Conventions
+### Releases
 
-All commit messages should have a [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) formatted commit. This allows `nx` to generate release notes and automatically increment the version and publish the packages.
+See [RELEASING.md](RELEASING.md) for package ownership and release instructions. The existing UI packages keep their published versions and release history; this repository no longer schedules releases for them. Future migrated packages use Changesets and require a changeset file for each release-worthy change.
 
-|             Name | Description                                   |
-| ---------------: | --------------------------------------------- |
-| BREAKING CHANGE: | Increments the `MAJOR` in Semantic Versioning |
-|            feat: | Increments the `MINOR` in Semantic Versioning |
-|             fix: | Increments the `PATCH` in Semantic Versioning |
-|           build: | Build                                         |
-|           chore: | Chores                                        |
-|              ci: | CICD                                          |
-|            docs: | Docs                                          |
-|           style: | Styling                                       |
-|        refactor: | Refactoring                                   |
-|            test: | Tests                                         |
-|            perf: | Performance                                   |
+### Conventional Commits
+
+Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) for repository commits. Commit type does not schedule a package release; Changesets files control releases for migrated packages.

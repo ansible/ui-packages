@@ -1,0 +1,44 @@
+name: Changesets
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  version:
+    name: Changeset version pull request
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Dependencies
+        run: npm ci
+
+      - name: Select Changesets mode
+        id: mode
+        uses: changesets/action/select-mode@v2.1.2
+
+      - name: Create or update version pull request
+        if: steps.mode.outputs.mode == 'version'
+        uses: changesets/action/version@v2.1.2
+        with:
+          script: npx changeset version
+          push-with-git-cli: false
