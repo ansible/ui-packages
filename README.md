@@ -1,6 +1,6 @@
 # Ansible UI Packages
 
-Mono repo containing all the public NPM packages developed by the Red Hat Ansible UI team.
+Monorepo containing public npm packages and developer tools from the Red Hat Ansible UI team.
 
 Packages are in the `packages` directory.
 
@@ -11,7 +11,7 @@ and uses npm workspaces to automate scripts across workspaces.
 
 1. Prerequisites
 
-   - Node `20.x` and up
+   - Node `22.23.4` or later in the 22.x line, or `24.x` and up (23.x is not supported)
    - NPM `8.x` and up
 
 2. Clone Repository

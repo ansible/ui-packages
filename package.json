@@ -1,11 +1,11 @@
 {
   "name": "@ansible/ui-packages",
-  "description": "React UI Framework built on PatternFly by the Ansible team",
+  "description": "Reusable frontend packages and developer tools from the Ansible team",
   "author": "The Red Hat Ansible Team",
   "license": "Apache-2.0",
   "type": "module",
   "engines": {
-    "node": ">=20.0.0"
+    "node": "^22.23.4 || >=24"
   },
   "os": [
     "darwin",
