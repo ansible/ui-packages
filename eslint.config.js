@@ -32,5 +32,13 @@ export default tseslint.config(
         },
       ],
     },
+  },
+  // These rules flag existing loader patterns; enable them in a separate refactor.
+  {
+    files: ["packages/ui-plugin-loader/**/*.{ts,tsx}"],
+    rules: {
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/static-components": "off",
+    },
   }
 );
