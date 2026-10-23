@@ -63,5 +63,8 @@
         }
       }
     }
-  ]
+  ],
+  "affected": {
+    "legacy": true
+  }
 }
