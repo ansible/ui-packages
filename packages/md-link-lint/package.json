@@ -1,0 +1,65 @@
+{
+  "name": "@ansible/md-link-lint",
+  "version": "0.0.0",
+  "description": "Check local file and heading links in Markdown files in Git repositories.",
+  "license": "Apache-2.0",
+  "bin": {
+    "md-link-lint": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/scan.d.ts",
+      "import": "./dist/scan.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsdown --config tsdown.config.ts",
+    "watch": "tsdown --config tsdown.config.ts --watch",
+    "tsc": "tsc --noEmit --project tsconfig.json",
+    "eslint": "eslint --max-warnings 0 --report-unused-disable-directives src test",
+    "eslint:fix": "eslint --fix src test",
+    "prettier": "prettier --check src test tsconfig.json tsdown.config.ts package.json README.md",
+    "prettier:fix": "prettier --write src test tsconfig.json tsdown.config.ts package.json README.md",
+    "depcheck": "depcheck",
+    "vitest": "vitest run --environment node",
+    "test": "npm run build && vitest run --environment node",
+    "linkcheck": "cd ../.. && node packages/md-link-lint/dist/cli.js --exclude 'packages/md-link-lint/test/fixtures/**'",
+    "lint": "npm run build && npm run linkcheck",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "commander": "15.0.0",
+    "github-slugger": "2.0.0",
+    "picomatch": "4.0.7",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
+    "unified": "11.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "26.3.0",
+    "@types/picomatch": "4.0.3",
+    "tsdown": "0.22.14",
+    "typescript": "7.0.2",
+    "vitest": "4.1.12"
+  },
+  "engines": {
+    "node": "^22.23.4 || >=24"
+  },
+  "author": "The Red Hat Ansible Team",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ansible/ui-packages.git",
+    "directory": "packages/md-link-lint"
+  },
+  "public": true
+}

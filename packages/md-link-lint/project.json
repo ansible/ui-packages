@@ -1,0 +1,13 @@
+{
+  "name": "@ansible/md-link-lint",
+  "targets": {
+    "linkcheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "cache": true,
+      "options": {
+        "command": "node packages/md-link-lint/dist/cli.js --exclude 'packages/md-link-lint/test/fixtures/**'"
+      }
+    }
+  }
+}
