@@ -27,9 +27,5 @@ release boundary. Publishing is disabled unless a separate change enables it.
 
 ## AI-assisted contributions
 
-You may use AI tools while preparing a contribution. You remain responsible for
-the submitted changes. Review generated code and documentation, verify sources
-and licenses, and run the relevant checks. Disclose substantial AI assistance
-in the pull request description, including the tool and the work it supported.
-Do not send secrets, personal data, or confidential information to external AI
-services.
+See [AI_POLICY.md](AI_POLICY.md) for this repository's policy on AI-assisted
+contributions and the governing Ansible Community policy.
