@@ -2,14 +2,45 @@ name: Pull Request
 
 on:
   pull_request:
-  
+  push:
+    branches:
+      - main
+
+permissions: {}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  pull-request:
-    name: Pull Request (Node ${{ matrix.node-version }})
+  static-analysis:
+    name: Static analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - run: npm ci --ignore-scripts
+      - run: npm run static
+      - name: Check workflow security
+        run: uvx zizmor==1.30.1 .github/workflows
+      - name: Check workflow syntax
+        env:
+          GOBIN: ${{ runner.temp }}/bin
+        run: |
+          go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+          "$GOBIN/actionlint" .github/workflows/*.yml
+
+  build:
+    name: Build (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -17,26 +48,54 @@ jobs:
         node-version: ['22.23.4', '24.x']
     permissions:
       contents: read
-      pull-requests: write
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
-          filter: tree:0
-          
-      - name: Node.js
-        uses: actions/setup-node@v4
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
 
-      - name: Dependencies
-        run: npm ci
+  test:
+    name: Test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ['22.23.4', '24.x']
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
 
-      - name: NX SHAs
-        uses: nrwl/nx-set-shas@v4
-
-      - name: Checks
-        run: npx nx affected --target tsc,vitest,prettier,eslint,depcheck --base=origin/main --head=${{ github.sha }}
+  required-checks:
+    name: Gate
+    if: always()
+    needs: [static-analysis, build, test]
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Verify required jobs succeeded
+        env:
+          STATIC_ANALYSIS_RESULT: ${{ needs.static-analysis.result }}
+          BUILD_RESULT: ${{ needs.build.result }}
+          TEST_RESULT: ${{ needs.test.result }}
+        run: |
+          set -euo pipefail
+          if [[ "$STATIC_ANALYSIS_RESULT" != "success" || "$BUILD_RESULT" != "success" || "$TEST_RESULT" != "success" ]]; then
+            echo "Required jobs must all succeed (static-analysis=$STATIC_ANALYSIS_RESULT, build=$BUILD_RESULT, test=$TEST_RESULT)."
+            exit 1
+          fi
