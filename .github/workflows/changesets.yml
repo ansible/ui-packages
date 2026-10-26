@@ -8,11 +8,43 @@ on:
 permissions: {}
 
 concurrency:
-  group: ${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  # Changesets uses this selector to keep id-token: write limited to publishing.
+  # See its Trusted Publishing workflow: https://changesets.dev/guide/automating#trusted-publishing
+  select-mode:
+    name: Select Changesets mode
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      mode: ${{ steps.mode.outputs.mode }}
+      publish-plan-artifact-id: ${{ steps.mode.outputs.publish-plan-artifact-id }}
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Select Changesets mode
+        id: mode
+        uses: changesets/action/select-mode@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+
   version:
     name: Changeset version pull request
+    needs: select-mode
+    if: needs.select-mode.outputs.mode == 'version'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -30,20 +62,99 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
-          cache: npm
+          package-manager-cache: false
 
       - name: Dependencies
         run: npm ci --ignore-scripts
 
-      - name: Select Changesets mode
-        id: mode
-        uses: changesets/action/select-mode@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
-
       - name: Create or update version pull request
-        if: steps.mode.outputs.mode == 'version'
         uses: changesets/action/version@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
           script: npm run changesets:version
           commit-message: "chore(release): version packages"
           pr-title: "chore(release): version packages"
           push-with-git-cli: false
+
+  pack:
+    name: Pack packages
+    needs: select-mode
+    if: needs.select-mode.outputs.mode == 'publish'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      pack-dir-artifact-id: ${{ steps.pack.outputs.pack-dir-artifact-id }}
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Test packages
+        run: npm test
+
+      - name: Pack packages
+        id: pack
+        uses: changesets/action/pack@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+        with:
+          publish-plan-artifact-id: ${{ needs.select-mode.outputs.publish-plan-artifact-id }}
+
+  publish:
+    name: Publish packages
+    needs:
+      - select-mode
+      - pack
+    if: needs.select-mode.outputs.mode == 'publish'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Check npm Trusted Publishing support
+        run: |
+          npm_version="$(npm --version)"
+          if ! node -e '
+            const [major, minor, patch] = process.argv[1].split(".").map(Number);
+            if (major > 11 || (major === 11 && (minor > 5 || (minor === 5 && patch >= 1)))) {
+              process.exit(0);
+            }
+            process.exit(1);
+          ' "$npm_version"; then
+            echo "::error::npm Trusted Publishing requires npm 11.5.1 or newer (found $npm_version)."
+            exit 1
+          fi
+
+      - name: Dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Publish packages
+        uses: changesets/action/publish@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+        with:
+          pack-dir-artifact-id: ${{ needs.pack.outputs.pack-dir-artifact-id }}
+          create-github-releases: true
+          push-git-tags: true
