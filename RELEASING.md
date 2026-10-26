@@ -5,14 +5,14 @@ their current versions and release history, but this repository does not plan
 future releases for them. Packages added later use Changesets for versioning.
 Keep the sets below disjoint and assign a package before merging its directory.
 
-| Package                          | Release owner | Version and release behavior                                      |
-| -------------------------------- | ------------- | ----------------------------------------------------------------- |
-| `@ansible/ui-plugin-loader`      | None          | Keep the published package and changelog; no future release       |
-| `@ansible/ui-plugin-pf5`         | None          | Keep the published package and changelog; no future release       |
-| `@ansible/ui-plugin-sdk`         | None          | Keep the published package and changelog; no future release       |
-| `@ansible/eslint-plugin`         | Changesets    | Independent version pull requests; publishing is disabled for now |
-| `@ansible/md-link-lint`          | Changesets    | Independent version pull requests; publishing is disabled for now |
-| `@ansible/ui-plugin-example-pf5` | None          | Example workspace; not published                                  |
+| Package                          | Release owner | Version and release behavior                                |
+| -------------------------------- | ------------- | ----------------------------------------------------------- |
+| `@ansible/ui-plugin-loader`      | None          | Keep the published package and changelog; no future release |
+| `@ansible/ui-plugin-pf5`         | None          | Keep the published package and changelog; no future release |
+| `@ansible/ui-plugin-sdk`         | None          | Keep the published package and changelog; no future release |
+| `@ansible/eslint-plugin`         | Changesets    | Independent version PRs; npm publish on merge               |
+| `@ansible/md-link-lint`          | Changesets    | Independent version PRs; npm publish on merge               |
+| `@ansible/ui-plugin-example-pf5` | None          | Example workspace; not published                            |
 
 Nx remains the task runner for workspace scripts and affected CI. Its release
 configuration and the old publish workflow are removed. Existing npm packages,
@@ -22,9 +22,12 @@ does not unpublish or rewrite them.
 Changesets ignores the existing UI packages and the example workspace in
 `.changeset/config.json`. It is configured for public, independent versions on
 `main`, with patch updates to internal dependency ranges. The workflow creates a
-version pull request for Changesets-owned packages. It does not publish
-packages or create npm tags or GitHub Releases. Add a publish job only in a
-separate change after the package and registry release path is ready.
+version pull request for Changesets-owned packages. After a version pull request
+merges, the publish job runs `changeset publish`, pushes a git tag, and creates a
+GitHub Release for each package it publishes. The publish job requires the
+repository Actions secret `NPM_TOKEN` with npm publish access. Configure the
+secret before merging the first version pull request; the workflow fails clearly
+if the secret is missing. Do not put token values in repository files.
 
 The version workflow needs GitHub Actions permission to create pull requests.
 It uses the GitHub API to create version commits, which receive a verified

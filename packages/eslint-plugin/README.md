@@ -2,6 +2,9 @@
 
 Portable custom ESLint rules for Ansible frontend packages.
 
+The npm install command below works after the first Changesets version PR is
+merged and published.
+
 ## Install
 
 ```bash

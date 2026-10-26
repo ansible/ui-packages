@@ -4,6 +4,9 @@
 
 ## Install and run
 
+The npm install command below works after the first Changesets version PR is
+merged and published.
+
 The npm package is named `@ansible/md-link-lint`; its CLI command is `md-link-lint`.
 
 In an independent Ansible repository, use Node.js 22.23.4 or later in the 22.x line, or 24.x and up, plus Git. Run these commands from that repository's working tree:
