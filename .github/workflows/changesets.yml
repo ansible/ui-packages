@@ -11,6 +11,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  # Changesets uses this selector to keep id-token: write limited to publishing.
+  # See its Trusted Publishing workflow: https://changesets.dev/guide/automating#trusted-publishing
   select-mode:
     name: Select Changesets mode
     runs-on: ubuntu-latest
