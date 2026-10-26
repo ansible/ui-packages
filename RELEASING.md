@@ -21,13 +21,14 @@ does not unpublish or rewrite them.
 
 Changesets ignores the existing UI packages and the example workspace in
 `.changeset/config.json`. It is configured for public, independent versions on
-`main`, with patch updates to internal dependency ranges. The workflow creates a
-version pull request for Changesets-owned packages. After a version pull request
-merges, the standard Changesets action runs `changeset publish`, pushes a git
-tag, and creates a GitHub Release for each package it publishes. npm publishing
-uses the repository Actions secret `NPM_TOKEN`. Configure the secret before
-merging the first version pull request. If the secret is missing or invalid,
-npm publishing will fail. Do not put token values in repository files.
+`main`, with patch updates to internal dependency ranges. The workflow uses
+Changesets mode selection to choose between a version job and a publish job. The
+version job creates or updates a version pull request. After that pull request
+merges, the publish job runs `changeset publish`, pushes a git tag, and creates
+a GitHub Release for each package it publishes. Only the publish job receives
+the repository Actions secret `NPM_TOKEN`. Configure the secret before merging
+the first version pull request. If the secret is missing or invalid, npm
+publishing will fail. Do not put token values in repository files.
 
 The version workflow needs GitHub Actions permission to create pull requests.
 It uses the GitHub API to create version commits, which receive a verified
