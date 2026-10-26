@@ -22,13 +22,12 @@ does not unpublish or rewrite them.
 Changesets ignores the existing UI packages and the example workspace in
 `.changeset/config.json`. It is configured for public, independent versions on
 `main`, with patch updates to internal dependency ranges. The workflow uses
-Changesets mode selection to choose between a version job and a pack-and-publish
-flow. The version job creates or updates a version pull request. After that pull
-request merges, a separate job builds, tests, and packs the packages without
-`id-token: write`. The publish job publishes those artifacts, pushes a git tag,
-and creates a GitHub Release for each package it publishes. Only the publish job
-receives `id-token: write` for npm Trusted Publishing. The workflow uses Node 24
-and checks for npm 11.5.1 or newer. It does not use an npm access token.
+Changesets mode selection to choose between a version job and a publish job. The
+version job creates or updates a version pull request. After that pull request
+merges, the publish job runs `changeset publish`, pushes a git tag, and creates
+a GitHub Release for each package it publishes. Only the publish job receives
+`id-token: write` for npm Trusted Publishing. It uses Node 24 and checks for npm
+11.5.1 or newer. The workflow does not use an npm access token.
 
 Set up a GitHub Actions trusted publisher separately for each package in npm
 settings. Use organization `ansible`, repository `ui-packages`, workflow filename
