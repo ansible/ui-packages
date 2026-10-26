@@ -79,6 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -86,30 +87,29 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Check npm publishing token
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if [[ -z "$NPM_TOKEN" ]]; then
-            echo "::error::Set the NPM_TOKEN Actions secret before publishing packages."
-            exit 1
-          fi
-
       - name: Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24
-          package-manager-cache: false
-
-      - name: Dependencies
-        run: npm ci --ignore-scripts
-
-      - name: Configure npm registry authentication
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
+
+      - name: Check npm Trusted Publishing support
+        run: |
+          npm_version="$(npm --version)"
+          if ! node -e '
+            const [major, minor, patch] = process.argv[1].split(".").map(Number);
+            if (major > 11 || (major === 11 && (minor > 5 || (minor === 5 && patch >= 1)))) {
+              process.exit(0);
+            }
+            process.exit(1);
+          ' "$npm_version"; then
+            echo "::error::npm Trusted Publishing requires npm 11.5.1 or newer (found $npm_version)."
+            exit 1
+          fi
+
+      - name: Dependencies
+        run: npm ci --ignore-scripts
 
       - name: Publish packages
         uses: changesets/action/publish@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
@@ -117,5 +117,3 @@ jobs:
           script: npm run changesets:publish
           create-github-releases: true
           push-git-tags: true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

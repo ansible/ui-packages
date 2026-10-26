@@ -26,9 +26,20 @@ Changesets mode selection to choose between a version job and a publish job. The
 version job creates or updates a version pull request. After that pull request
 merges, the publish job runs `changeset publish`, pushes a git tag, and creates
 a GitHub Release for each package it publishes. Only the publish job receives
-the repository Actions secret `NPM_TOKEN`. Configure the secret before merging
-the first version pull request. If the secret is missing or invalid, npm
-publishing will fail. Do not put token values in repository files.
+`id-token: write` for npm Trusted Publishing. It uses Node 24 and checks for npm
+11.5.1 or newer. The workflow does not use an npm access token.
+
+Set up a GitHub Actions trusted publisher separately for each package in npm
+settings. Use organization `ansible`, repository `ui-packages`, workflow filename
+`changesets.yml`, and allow `npm publish`. Do not set an environment name because
+this workflow does not use a GitHub environment. The package repository URLs
+must match this repository.
+
+Trusted Publishing cannot be configured for these new packages until they exist
+on npm. Changesets guidance says to manually publish a `0.0.0` stub first, add
+the trusted publisher, and then publish the proper initial version through a
+Changesets version pull request. Complete the first successful trusted publish
+within two days of adding each publisher.
 
 The version workflow needs GitHub Actions permission to create pull requests.
 It uses the GitHub API to create version commits, which receive a verified
