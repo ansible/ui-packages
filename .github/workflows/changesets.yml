@@ -11,42 +11,13 @@ concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-  select-mode:
-    name: Select Changesets mode
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    outputs:
-      mode: ${{ steps.mode.outputs.mode }}
-    timeout-minutes: 10
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Dependencies
-        run: npm ci --ignore-scripts
-
-      - name: Select Changesets mode
-        id: mode
-        uses: changesets/action/select-mode@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
-
-  version:
-    name: Changeset version pull request
-    needs: select-mode
-    if: needs.select-mode.outputs.mode == 'version'
+  release:
+    name: Version or publish packages
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -64,57 +35,21 @@ jobs:
       - name: Dependencies
         run: npm ci --ignore-scripts
 
-      - name: Create or update version pull request
-        uses: changesets/action/version@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
-        with:
-          script: npm run changesets:version
-          commit-message: "chore(release): version packages"
-          pr-title: "chore(release): version packages"
-          push-with-git-cli: false
-
-  publish:
-    name: Publish packages
-    needs: select-mode
-    if: needs.select-mode.outputs.mode == 'publish'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    timeout-minutes: 15
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Check npm publishing token
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if [[ -z "$NPM_TOKEN" ]]; then
-            echo "::error::Set the NPM_TOKEN Actions secret before publishing packages."
-            exit 1
-          fi
-
-      - name: Node.js
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Dependencies
-        run: npm ci --ignore-scripts
-
       - name: Configure npm registry authentication
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
 
-      - name: Publish packages
-        uses: changesets/action/publish@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+      - name: Create version pull request or publish packages
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          script: npm run changesets:publish
+          version-script: npm run changesets:version
+          publish-script: npm run changesets:publish
+          commit-message: "chore(release): version packages"
+          pr-title: "chore(release): version packages"
           create-github-releases: true
           push-git-tags: true
+          push-with-git-cli: false
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -23,11 +23,11 @@ Changesets ignores the existing UI packages and the example workspace in
 `.changeset/config.json`. It is configured for public, independent versions on
 `main`, with patch updates to internal dependency ranges. The workflow creates a
 version pull request for Changesets-owned packages. After a version pull request
-merges, the publish job runs `changeset publish`, pushes a git tag, and creates a
-GitHub Release for each package it publishes. The publish job requires the
-repository Actions secret `NPM_TOKEN` with npm publish access. Configure the
-secret before merging the first version pull request; the workflow fails clearly
-if the secret is missing. Do not put token values in repository files.
+merges, the standard Changesets action runs `changeset publish`, pushes a git
+tag, and creates a GitHub Release for each package it publishes. npm publishing
+uses the repository Actions secret `NPM_TOKEN`. Configure the secret before
+merging the first version pull request. If the secret is missing or invalid,
+npm publishing will fail. Do not put token values in repository files.
 
 The version workflow needs GitHub Actions permission to create pull requests.
 It uses the GitHub API to create version commits, which receive a verified
