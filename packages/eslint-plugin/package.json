@@ -7,7 +7,10 @@
     "eslint-plugin",
     "flat-config",
     "no-barrel-files",
+    "no-hardcoded-api-prefix",
+    "no-hardcoded-doc-urls",
     "no-nested-component-definitions",
+    "no-unapproved-http-client",
     "require-function-jsdoc",
     "typescript"
   ],

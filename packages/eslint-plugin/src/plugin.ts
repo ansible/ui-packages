@@ -2,10 +2,20 @@ import type { ESLint, Linter } from 'eslint'
 import { createRequire } from 'node:module'
 
 import noBarrelFiles from './rules/no-barrel-files.ts'
+import noHardcodedApiPrefix from './rules/no-hardcoded-api-prefix.ts'
+import noHardcodedDocUrls from './rules/no-hardcoded-doc-urls.ts'
 import noNestedComponentDefinitions from './rules/no-nested-component-definitions.ts'
+import noUnapprovedHttpClient from './rules/no-unapproved-http-client.ts'
 import requireFunctionJsdoc from './rules/require-function-jsdoc.ts'
 
-export { noBarrelFiles, noNestedComponentDefinitions, requireFunctionJsdoc }
+export {
+  noBarrelFiles,
+  noHardcodedApiPrefix,
+  noHardcodedDocUrls,
+  noNestedComponentDefinitions,
+  noUnapprovedHttpClient,
+  requireFunctionJsdoc,
+}
 
 // Read the version rather than repeating it, so a Changeset release cannot
 // leave `meta.version` behind. `src` and `dist` are both one level below the
@@ -14,7 +24,10 @@ const { version } = createRequire(import.meta.url)('../package.json') as { versi
 
 export const rules = {
   'no-barrel-files': noBarrelFiles,
+  'no-hardcoded-api-prefix': noHardcodedApiPrefix,
+  'no-hardcoded-doc-urls': noHardcodedDocUrls,
   'no-nested-component-definitions': noNestedComponentDefinitions,
+  'no-unapproved-http-client': noUnapprovedHttpClient,
   'require-function-jsdoc': requireFunctionJsdoc,
 }
 
@@ -46,9 +59,10 @@ const testFiles = [
 ]
 
 /** Creates a config that registers this plugin for matching source files. */
-function createPluginConfig(rules: NonNullable<Linter.Config['rules']>): Linter.Config {
+function createPluginConfig(rules: NonNullable<Linter.Config['rules']>, ignoredFiles: string[] = []): Linter.Config {
   return {
     files: sourceFiles,
+    ...(ignoredFiles.length > 0 ? { ignores: ignoredFiles } : {}),
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
@@ -74,3 +88,13 @@ plugin.configs.recommended = [
 ]
 
 plugin.configs['documented-functions'] = [createPluginConfig({ '@ansible/require-function-jsdoc': 'error' })]
+
+// Application-specific checks are separate flat configs so consumers can opt
+// into the conventions their projects use without changing `recommended`.
+plugin.configs['api-paths'] = [createPluginConfig({ '@ansible/no-hardcoded-api-prefix': 'error' }, testFiles)]
+
+plugin.configs['documentation-links'] = [createPluginConfig({ '@ansible/no-hardcoded-doc-urls': 'error' }, testFiles)]
+
+plugin.configs['http-client-policy'] = [
+  createPluginConfig({ '@ansible/no-unapproved-http-client': 'error' }, testFiles),
+]

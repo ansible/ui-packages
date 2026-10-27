@@ -5,9 +5,18 @@ import parser from '@typescript-eslint/parser'
 import ansible from '@ansible/eslint-plugin'
 
 describe('published ESLint package', () => {
-  it('exports the documented-functions rule and opt-in config', () => {
+  it('exports the rules and opt-in configs', () => {
     expect(Object.keys(ansible.rules ?? {})).toContain('require-function-jsdoc')
-    expect(Object.keys(ansible.configs ?? {})).toEqual(['recommended', 'documented-functions'])
+    expect(Object.keys(ansible.rules ?? {})).toContain('no-hardcoded-api-prefix')
+    expect(Object.keys(ansible.rules ?? {})).toContain('no-hardcoded-doc-urls')
+    expect(Object.keys(ansible.rules ?? {})).toContain('no-unapproved-http-client')
+    expect(Object.keys(ansible.configs ?? {})).toEqual([
+      'recommended',
+      'documented-functions',
+      'api-paths',
+      'documentation-links',
+      'http-client-policy',
+    ])
   })
 
   it('loads the published package and reports barrel files', async () => {
