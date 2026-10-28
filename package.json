@@ -56,7 +56,7 @@
     "@swc-node/register": "^1.12.1",
     "@swc/core": "^1.16.20",
     "@swc/helpers": "~0.5.17",
-    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^13.4.0",
     "@vitejs/plugin-react-swc": "^3.10.1",
     "@vitest/coverage-v8": "^4.1.12",
