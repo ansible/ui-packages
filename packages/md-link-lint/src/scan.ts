@@ -36,13 +36,10 @@ function validateOptions(options: unknown): string | null {
 }
 
 type LoadedMarkdown =
-  | { ok: true; parsed: ParsedMarkdown }
-  | { ok: false; reason: string; code: 'unreadable' | 'parse-error' }
+  { ok: true; parsed: ParsedMarkdown } | { ok: false; reason: string; code: 'unreadable' | 'parse-error' }
 
 type TargetStat =
-  | { kind: 'missing' }
-  | { kind: 'existing'; isFile: boolean; isDirectory: boolean }
-  | { kind: 'error'; reason: string }
+  { kind: 'missing' } | { kind: 'existing'; isFile: boolean; isDirectory: boolean } | { kind: 'error'; reason: string }
 
 /** Create fresh counters so separate reports never share mutable scan state. */
 const emptyCounts = () => ({
