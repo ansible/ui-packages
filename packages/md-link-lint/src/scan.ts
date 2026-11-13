@@ -1,13 +1,49 @@
 import { readFileSync, realpathSync, statSync } from 'node:fs'
 import { resolve } from 'node:path'
+import picomatch from 'picomatch'
 import { discoverMarkdownFiles } from './discover.js'
 import { GitCommandError, findRepositoryRoot } from './git.js'
 import { parseMarkdown } from './markdown.js'
 import { isMarkdownPath, isRealPathWithinRepository, toRepositoryPath } from './paths.js'
 import { resolveDestination } from './resolve.js'
-import type { Finding, ParsedMarkdown, ScanError, ScanOptions, ScanReport } from './types.js'
+import type { Finding, MarkdownProfile, ParsedMarkdown, ScanError, ScanOptions, ScanReport } from './types.js'
 
-export type { Finding, FindingCode, ScanCounts, ScanError, ScanErrorCode, ScanOptions, ScanReport } from './types.js'
+export type {
+  Finding,
+  FindingCode,
+  MarkdownProfile,
+  ScanCounts,
+  ScanError,
+  ScanErrorCode,
+  ScanOptions,
+  ScanReport,
+} from './types.js'
+
+type TargetProfileRule = {
+  profile: MarkdownProfile
+  matches: (path: string) => boolean
+}
+
+const isMarkdownProfile = (value: unknown): value is MarkdownProfile =>
+  value === 'github' || value === 'python-markdown'
+
+/** Compile path-based profile rules and reject negation or malformed globs. */
+function compileTargetProfileRules(targetProfiles: Record<string, MarkdownProfile> = {}): TargetProfileRule[] {
+  return Object.entries(targetProfiles).map(([pattern, profile]) => {
+    try {
+      if (pattern.startsWith('!')) throw new Error('negated patterns are not supported')
+      return { profile, matches: picomatch(pattern, { dot: true, strictBrackets: true }) }
+    } catch (error) {
+      throw new Error(
+        'Invalid target profile glob ' +
+          JSON.stringify(pattern) +
+          ': ' +
+          (error instanceof Error ? error.message : String(error)),
+        { cause: error },
+      )
+    }
+  })
+}
 
 /** Reject unknown options and invalid values before accessing Git or the filesystem. */
 function validateOptions(options: unknown): string | null {
@@ -17,7 +53,7 @@ function validateOptions(options: unknown): string | null {
 
   const values = options as Record<string, unknown>
   for (const key of Object.keys(values)) {
-    if (key !== 'cwd' && key !== 'paths' && key !== 'exclude') {
+    if (key !== 'cwd' && key !== 'paths' && key !== 'exclude' && key !== 'defaultProfile' && key !== 'targetProfiles') {
       return `unknown scan option: ${JSON.stringify(key)}`
     }
   }
@@ -30,6 +66,24 @@ function validateOptions(options: unknown): string | null {
     if (!Array.isArray(value)) return `${key} must be an array of strings`
     for (const [index, item] of value.entries()) {
       if (typeof item !== 'string') return `${key}[${index}] must be a string`
+    }
+  }
+  if (values.defaultProfile !== undefined && !isMarkdownProfile(values.defaultProfile)) {
+    return 'defaultProfile must be "github" or "python-markdown"'
+  }
+  if (values.targetProfiles !== undefined) {
+    if (
+      typeof values.targetProfiles !== 'object' ||
+      values.targetProfiles === null ||
+      Array.isArray(values.targetProfiles)
+    ) {
+      return 'targetProfiles must be an object mapping globs to Markdown profiles'
+    }
+    for (const [pattern, profile] of Object.entries(values.targetProfiles)) {
+      if (pattern.length === 0) return 'targetProfiles cannot contain an empty glob'
+      if (!isMarkdownProfile(profile)) {
+        return 'targetProfiles[' + JSON.stringify(pattern) + '] must be "github" or "python-markdown"'
+      }
     }
   }
   return null
@@ -74,7 +128,7 @@ function targetStat(path: string): TargetStat {
 }
 
 /** Read and parse a document while distinguishing filesystem and Markdown failures. */
-function loadMarkdown(path: string): LoadedMarkdown {
+function loadMarkdown(path: string, profile: MarkdownProfile): LoadedMarkdown {
   let content: string
   try {
     content = readFileSync(path, 'utf8')
@@ -83,7 +137,7 @@ function loadMarkdown(path: string): LoadedMarkdown {
   }
 
   try {
-    return { ok: true, parsed: parseMarkdown(content) }
+    return { ok: true, parsed: parseMarkdown(content, profile) }
   } catch (error) {
     return { ok: false, code: 'parse-error', reason: errorMessage(error) }
   }
@@ -119,6 +173,23 @@ export function scan(options: ScanOptions = {}): ScanReport {
   const optionsError = validateOptions(options)
   if (optionsError !== null) {
     return createErrorReport({ code: 'invalid-options', reason: optionsError })
+  }
+
+  let targetProfileRules: TargetProfileRule[]
+  try {
+    targetProfileRules = compileTargetProfileRules(options.targetProfiles)
+  } catch (error) {
+    return createErrorReport({
+      code: 'invalid-target-profile-glob',
+      reason: errorMessage(error),
+    })
+  }
+  const profileForPath = (path: string): MarkdownProfile => {
+    let profile = options.defaultProfile ?? 'github'
+    for (const rule of targetProfileRules) {
+      if (rule.matches(path)) profile = rule.profile
+    }
+    return profile
   }
 
   let cwd: string
@@ -164,10 +235,12 @@ export function scan(options: ScanOptions = {}): ScanReport {
       })
       continue
     }
-    let loaded = markdownCache.get(absolutePath)
+    const profile = profileForPath(sourcePath)
+    const cacheKey = absolutePath + '\0' + profile
+    let loaded = markdownCache.get(cacheKey)
     if (!loaded) {
-      loaded = loadMarkdown(absolutePath)
-      markdownCache.set(absolutePath, loaded)
+      loaded = loadMarkdown(absolutePath, profile)
+      markdownCache.set(cacheKey, loaded)
     }
 
     if (!loaded.ok) {
@@ -194,11 +267,13 @@ export function scan(options: ScanOptions = {}): ScanReport {
   }
 
   /** Reuse parsed documents, including selected sources, for repeated anchor checks. */
-  function getMarkdown(absolutePath: string): LoadedMarkdown {
-    const cached = markdownCache.get(absolutePath)
+  function getMarkdown(absolutePath: string, repositoryPath: string): LoadedMarkdown {
+    const profile = profileForPath(repositoryPath)
+    const cacheKey = absolutePath + '\0' + profile
+    const cached = markdownCache.get(cacheKey)
     if (cached) return cached
-    const loaded = loadMarkdown(absolutePath)
-    markdownCache.set(absolutePath, loaded)
+    const loaded = loadMarkdown(absolutePath, profile)
+    markdownCache.set(cacheKey, loaded)
     return loaded
   }
 
@@ -278,7 +353,8 @@ export function scan(options: ScanOptions = {}): ScanReport {
         continue
       }
 
-      const targetMarkdown = getMarkdown(targetPath)
+      const displayPath = toRepositoryPath(repositoryRoot, targetPath)
+      const targetMarkdown = getMarkdown(targetPath, displayPath)
       if (!targetMarkdown.ok) {
         report.scanErrors.push({
           code: targetMarkdown.code === 'unreadable' ? 'unreadable-target' : 'markdown-parse-error',
@@ -286,14 +362,13 @@ export function scan(options: ScanOptions = {}): ScanReport {
           line: link.line,
           column: link.column,
           destination: link.destination,
-          targetPath: toRepositoryPath(repositoryRoot, targetPath),
+          targetPath: displayPath,
           reason: targetMarkdown.reason,
         })
         continue
       }
 
       if (!targetMarkdown.parsed.headingAnchors.has(fragment)) {
-        const displayPath = toRepositoryPath(repositoryRoot, targetPath)
         report.findings.push({
           sourcePath: source.sourcePath,
           line: link.line,

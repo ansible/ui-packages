@@ -259,6 +259,83 @@ describe('scan', () => {
     expect(report.counts.anchorChecksSkipped).toBe(0)
   })
 
+  it('checks Python-Markdown punctuation, duplicate headings, and explicit heading IDs on cross-file links', () => {
+    const root = makeRepository({
+      'AGENTS.md': [
+        '[punctuation](docs/guide.md#what-is-mkdocs)',
+        '[duplicate](docs/guide.md#repeat_1)',
+        '[explicit ID](docs/guide.md#custom-start)',
+        '[missing slug](docs/guide.md#what-is-mkdocs-)',
+      ].join('\n'),
+      'docs/guide.md': [
+        '# What is MkDocs?',
+        '## Repeat',
+        '## Repeat',
+        '## Custom start {#custom-start}',
+        '[second repeat](#repeat_1)',
+      ].join('\n'),
+    })
+
+    const report = scan({
+      cwd: root,
+      defaultProfile: 'github',
+      targetProfiles: { 'docs/**': 'python-markdown' },
+    })
+
+    expect(report.findings).toEqual([
+      {
+        sourcePath: 'AGENTS.md',
+        line: 4,
+        column: 1,
+        destination: 'docs/guide.md#what-is-mkdocs-',
+        code: 'missing-anchor',
+        reason: 'heading anchor "what-is-mkdocs-" does not exist in docs/guide.md',
+      },
+    ])
+  })
+
+  it('omits inline image alt text from Python-Markdown heading IDs', () => {
+    const root = makeRepository({
+      'AGENTS.md': '[setup](docs/guide.md#setup)\n[with alt](docs/guide.md#icon-setup)\n',
+      'docs/guide.md': '## ![icon](../assets/icon.svg) Setup\n',
+      'assets/icon.svg': '<svg />\n',
+    })
+
+    const report = scan({
+      cwd: root,
+      targetProfiles: { 'docs/**': 'python-markdown' },
+    })
+
+    expect(report.findings.map(({ destination, code }) => [destination, code])).toEqual([
+      ['docs/guide.md#icon-setup', 'missing-anchor'],
+    ])
+  })
+
+  it('selects profiles by nested target path and uses the last matching path rule', () => {
+    const root = makeRepository({
+      'AGENTS.md': [
+        '[nested Python target](docs/nested/guide.md#section_1)',
+        '[GitHub target](docs/other.md#section-1)',
+        '[default Python target](outside.md#section_1)',
+      ].join('\n'),
+      'docs/nested/guide.md': '## Section\n## Section\n[second section](#section_1)\n',
+      'docs/other.md': '## Section\n## Section\n',
+      'outside.md': '## Section\n## Section\n',
+    })
+
+    const report = scan({
+      cwd: root,
+      defaultProfile: 'python-markdown',
+      targetProfiles: {
+        'docs/**': 'github',
+        'docs/nested/**': 'python-markdown',
+      },
+    })
+
+    expect(report.findings).toEqual([])
+    expect(report.counts.filesScanned).toBe(4)
+  })
+
   it('extracts inline, reference, image, and GFM autolinks but ignores code and HTML', () => {
     const root = makeRepository({
       'AGENTS.md': [
@@ -667,6 +744,49 @@ describe('scan', () => {
 })
 
 describe('runCli', () => {
+  it('loads target profiles from a JSON configuration file', () => {
+    const root = makeRepository({
+      'AGENTS.md': '[guide](docs/guide.md#what-is-mkdocs)\n',
+      'docs/guide.md': '# What is MkDocs?\n',
+      'md-link-lint.config.json': JSON.stringify({
+        defaultProfile: 'github',
+        targetProfiles: { 'docs/**': 'python-markdown' },
+      }),
+    })
+
+    const result = captureCli(['--config', 'md-link-lint.config.json', '--json'], root)
+
+    expect(result.exitCode).toBe(0)
+    expect(result.stderr).toBe('')
+    expect(JSON.parse(result.stdout)).toMatchObject({
+      findings: [],
+      scanErrors: [],
+      counts: { filesScanned: 2, linksChecked: 1 },
+    })
+  })
+
+  it('loads target profiles from a JSON configuration file through the built executable', () => {
+    const root = makeRepository({
+      'AGENTS.md': '[guide](docs/guide.md#what-is-mkdocs)\n',
+      'docs/guide.md': '# What is MkDocs?\n',
+      'md-link-lint.config.json': JSON.stringify({
+        defaultProfile: 'github',
+        targetProfiles: { 'docs/**': 'python-markdown' },
+      }),
+    })
+
+    const result = captureBuiltCli(['--config', 'md-link-lint.config.json', '--json'], root, true)
+
+    expect(result.error).toBeUndefined()
+    expect(result.exitCode).toBe(0)
+    expect(result.stderr).toBe('')
+    expect(JSON.parse(result.stdout)).toMatchObject({
+      findings: [],
+      scanErrors: [],
+      counts: { filesScanned: 2, linksChecked: 1 },
+    })
+  })
+
   it('runs the built executable against the checked-in Markdown repository', () => {
     const root = makeFixtureRepository()
     const result = captureBuiltCli(['--json'], root, true)

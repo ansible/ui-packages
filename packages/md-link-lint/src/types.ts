@@ -17,6 +17,7 @@ export type Finding = {
 export type ScanErrorCode =
   | 'invalid-options'
   | 'invalid-exclude-glob'
+  | 'invalid-target-profile-glob'
   | 'not-a-git-repository'
   | 'git-command-failed'
   | 'input-path-not-found'
@@ -60,7 +61,13 @@ export type ScanOptions = {
   paths?: string[]
   /** Repeatable glob patterns matched against repository-relative source paths. */
   exclude?: string[]
+  /** Heading-ID rules for documents without a matching targetProfiles rule. Defaults to GitHub. */
+  defaultProfile?: MarkdownProfile
+  /** Heading-ID rules keyed by repository-relative target-path globs. Later matches take precedence. */
+  targetProfiles?: Record<string, MarkdownProfile>
 }
+
+export type MarkdownProfile = 'github' | 'python-markdown'
 
 export type LinkOccurrence = {
   destination: string
