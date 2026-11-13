@@ -32,20 +32,24 @@
     "tsc": "nx run-many --target tsc && npm run tsc:agent-hooks",
     "tsc:agent-hooks": "tsc --noEmit --project tsconfig.agent-hooks.json",
     "check:agent-hook-policy": "node .agents/hooks/check-agent-hook-policy.ts",
-    "eslint": "nx run-many --target eslint",
-    "eslint:fix": "nx run-many --target eslint:fix",
+    "eslint": "nx run-many --target eslint && npm run eslint:agent-hooks",
+    "eslint:agent-hooks": "eslint --max-warnings 0 --report-unused-disable-directives .agents/hooks",
+    "eslint:fix": "nx run-many --target eslint:fix && npm run eslint:fix:agent-hooks",
+    "eslint:fix:agent-hooks": "eslint --fix --max-warnings 0 --report-unused-disable-directives .agents/hooks",
     "vitest": "nx run-many --target vitest",
     "vitest:ui": "vitest --ui",
-    "prettier": "nx run-many --target prettier",
-    "prettier:fix": "nx run-many --target prettier:fix",
+    "prettier": "nx run-many --target prettier && npm run prettier:agent-hooks",
+    "prettier:agent-hooks": "prettier --check .agents/hooks",
+    "prettier:fix": "nx run-many --target prettier:fix && npm run prettier:fix:agent-hooks",
+    "prettier:fix:agent-hooks": "prettier --write .agents/hooks",
     "depcheck": "nx run-many --target depcheck",
-    "fix": "nx run-many --target prettier:fix,eslint:fix",
+    "fix": "nx run-many --target prettier:fix,eslint:fix && npm run prettier:fix:agent-hooks && npm run eslint:fix:agent-hooks",
     "changeset": "changeset",
     "changesets:add": "changeset",
     "changesets:version": "changeset version",
     "prepare": "husky",
     "lint-staged": "lint-staged",
-    "static": "npm run check:agent-hook-policy && npm run tsc:agent-hooks && nx run-many --target tsc,prettier,eslint,depcheck,linkcheck",
+    "static": "npm run check:agent-hook-policy && npm run tsc:agent-hooks && npm run eslint:agent-hooks && npm run prettier:agent-hooks && nx run-many --target tsc,prettier,eslint,depcheck,linkcheck",
     "attw": "nx run-many --target attw",
     "linkcheck": "nx run @ansible/md-link-lint:linkcheck"
   },
@@ -81,7 +85,7 @@
     "vitest": "^4.1.12"
   },
   "lint-staged": {
-    "*.ts[x]": [
+    "*.{ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ]

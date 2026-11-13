@@ -55,12 +55,30 @@ const scripts = isRecord(packageJson) && isRecord(packageJson.scripts) ? package
 if (scripts['tsc:agent-hooks'] !== 'tsc --noEmit --project tsconfig.agent-hooks.json') {
   policyErrors.push('Keep tsc:agent-hooks limited to `tsc --noEmit --project tsconfig.agent-hooks.json`.')
 }
+if (scripts['eslint:agent-hooks'] !== 'eslint --max-warnings 0 --report-unused-disable-directives .agents/hooks') {
+  policyErrors.push('Add an eslint:agent-hooks script that lints the shared TypeScript hook sources.')
+}
+if (scripts['prettier:agent-hooks'] !== 'prettier --check .agents/hooks') {
+  policyErrors.push('Add a prettier:agent-hooks script that checks formatting for the shared hook sources.')
+}
 if (
   typeof scripts.static !== 'string' ||
   !scripts.static.includes('npm run check:agent-hook-policy') ||
-  !scripts.static.includes('npm run tsc:agent-hooks')
+  !scripts.static.includes('npm run tsc:agent-hooks') ||
+  !scripts.static.includes('npm run eslint:agent-hooks') ||
+  !scripts.static.includes('npm run prettier:agent-hooks')
 ) {
-  policyErrors.push('The static script must run the policy check and the agent hook type check.')
+  policyErrors.push('The static script must run agent hook policy, type, lint, and formatting checks.')
+}
+
+const lintStaged = isRecord(packageJson) && isRecord(packageJson['lint-staged']) ? packageJson['lint-staged'] : {}
+const stagedTypeScriptChecks = lintStaged['*.{ts,tsx}']
+if (
+  !Array.isArray(stagedTypeScriptChecks) ||
+  !stagedTypeScriptChecks.includes('eslint --fix') ||
+  !stagedTypeScriptChecks.includes('prettier --write')
+) {
+  policyErrors.push('Configure lint-staged to lint and format staged `.ts` and `.tsx` files.')
 }
 
 const pullRequestWorkflow = readFileSync(join(repositoryRoot, '.github/workflows/pull-request.yml'), 'utf8')
