@@ -153,8 +153,27 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Publish packages
+        id: publish
         uses: changesets/action/publish@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
           pack-dir-artifact-id: ${{ needs.pack.outputs.pack-dir-artifact-id }}
           create-github-releases: true
           push-git-tags: true
+
+      - name: Format published versions
+        id: package-list
+        if: steps.publish.outputs.published == 'true'
+        env:
+          PUBLISHED_PACKAGES: ${{ steps.publish.outputs.published-packages }}
+        run: |
+          packages="$(jq -r '[.[] | "`\(.name)@\(.version)`"] | join(", ")' <<< "$PUBLISHED_PACKAGES")"
+          printf 'list=%s\n' "$packages" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Slack
+        if: steps.publish.outputs.published == 'true'
+        uses: slackapi/slack-github-action@dcb1066f776dd043e64d0e8ba94ca15cc7e1875d # v4.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: ":package: Published package versions: ${{ steps.package-list.outputs.list }}. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Workflow run>"

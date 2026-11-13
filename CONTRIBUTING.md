@@ -19,6 +19,21 @@ npm test
 
 GitHub Actions also runs the relevant checks for pull requests.
 
+## Environment configuration
+
+Use Varlock schemas for environment variables. The root `.env.schema` holds
+shared settings; apps add a nearby `.env.schema` and import only the shared
+items they use. Packages without environment variables do not need a schema.
+Keep local values in ignored `.env.local` files, mark secrets sensitive, and
+never commit plaintext `.env` files.
+
+Validate the schemas with:
+
+```sh
+npm exec -- varlock load --agent
+npm exec -- varlock load --agent --path examples/ui-plugin-example-pf5/
+```
+
 ## Changesets
 
 Add a Changeset for every release-worthy change to a Changesets-managed
