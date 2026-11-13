@@ -1,0 +1,18 @@
+{
+  "description": "Prevent manual edits to Changeset fragments in this repository.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^(Bash|apply_patch|Edit|Write|exec|functions\\.exec)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/block-manual-changesets.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking Changeset fragment writes"
+          }
+        ]
+      }
+    ]
+  }
+}
