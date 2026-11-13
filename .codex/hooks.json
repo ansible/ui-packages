@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/block-manual-changesets.mjs\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/block-manual-changesets.ts\"",
             "timeout": 10,
             "statusMessage": "Checking Changeset fragment writes"
           }

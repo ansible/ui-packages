@@ -1,25 +1,31 @@
 import path from 'node:path'
 
+type HookEvent = {
+  tool_name?: string
+  tool_input?: unknown
+  cwd?: string
+}
+
+type ToolArguments = Record<string, unknown>
+
 const fragmentPath = /(?<![\w.-])\.changeset[\\/][^\\/\s"'`]+\.md(?:$|[\s"'`)])/i
 const patchFile = /^\s*\*\*\*\s+(?:(?:Add|Update|Delete)\s+File|Move to):\s*(.*?)\s*$/gm
 const embeddedCommand = /(?:cmd|command)\s*:\s*(['"])(.*?)\1/gs
 const safeBash =
   /^\s*(?:git\s+(?:status|diff|show|log|ls-files|add)\b|(?:ls|cat|head|tail|less|more|sed|rg|grep|stat|file|wc)\b)/i
 
-const event = JSON.parse(await readStdin())
+const event = JSON.parse(await readStdin()) as HookEvent
 const toolName = event.tool_name ?? ''
-const toolInput = event.tool_input ?? {}
+const rawToolInput = event.tool_input
+const toolInput: ToolArguments =
+  rawToolInput !== null && typeof rawToolInput === 'object' ? (rawToolInput as ToolArguments) : {}
 const cwd = event.cwd ?? '.'
-
 const command =
-  typeof toolInput === 'string'
-    ? toolInput
-    : (['command', 'cmd', 'patch', 'code'].map((key) => toolInput[key]).find((value) => typeof value === 'string') ??
-      '')
+  typeof rawToolInput === 'string' ? rawToolInput : getStringInput(toolInput, ['command', 'cmd', 'patch', 'code'])
 
 const reason = 'Do not write Changeset fragments by hand. Run `npm run changesets:add` and follow the CLI prompts.'
 
-function readStdin() {
+function readStdin(): Promise<string> {
   return new Promise((resolve, reject) => {
     let input = ''
     process.stdin.setEncoding('utf8')
@@ -29,13 +35,21 @@ function readStdin() {
   })
 }
 
-function isChangesetFragment(filePath) {
-  const normalized = filePath.replaceAll('\\', '/')
-  const segments = normalized.split('/')
-  return segments.at(-2) === '.changeset' && path.posix.extname(segments.at(-1)).toLowerCase() === '.md'
+function getStringInput(input: ToolArguments, keys: string[]): string {
+  for (const key of keys) {
+    const value = input[key]
+    if (typeof value === 'string') return value
+  }
+  return ''
 }
 
-function isInsideChangesets(directory) {
+function isChangesetFragment(filePath: string): boolean {
+  const normalized = filePath.replaceAll('\\', '/')
+  const segments = normalized.split('/')
+  return segments.at(-2) === '.changeset' && path.posix.extname(segments.at(-1) ?? '').toLowerCase() === '.md'
+}
+
+function isInsideChangesets(directory: string): boolean {
   let current = path.resolve(directory)
   while (true) {
     if (path.basename(current) === '.changeset') return true
@@ -45,11 +59,11 @@ function isInsideChangesets(directory) {
   }
 }
 
-function isNonwritingShellCommand(value) {
+function isNonwritingShellCommand(value: string): boolean {
   return !/[;&|<>`]|\$\(/.test(value) && safeBash.test(value)
 }
 
-function deny() {
+function deny(): void {
   process.stdout.write(
     JSON.stringify({
       hookSpecificOutput: {
@@ -64,7 +78,7 @@ function deny() {
 if (['apply_patch', 'Edit', 'Write'].includes(toolName)) {
   const targets = [...command.matchAll(patchFile)].map((match) => match[1].trim())
   for (const key of ['file_path', 'filePath', 'path', 'filename', 'target']) {
-    if (typeof toolInput[key] === 'string') targets.push(toolInput[key])
+    if (typeof toolInput[key] === 'string') targets.push(toolInput[key] as string)
   }
   if (targets.some(isChangesetFragment)) deny()
 } else if (toolName === 'Bash') {
