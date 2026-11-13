@@ -765,6 +765,28 @@ describe('runCli', () => {
     })
   })
 
+  it('loads target profiles from a JSON configuration file through the built executable', () => {
+    const root = makeRepository({
+      'AGENTS.md': '[guide](docs/guide.md#what-is-mkdocs)\n',
+      'docs/guide.md': '# What is MkDocs?\n',
+      'md-link-lint.config.json': JSON.stringify({
+        defaultProfile: 'github',
+        targetProfiles: { 'docs/**': 'python-markdown' },
+      }),
+    })
+
+    const result = captureBuiltCli(['--config', 'md-link-lint.config.json', '--json'], root, true)
+
+    expect(result.error).toBeUndefined()
+    expect(result.exitCode).toBe(0)
+    expect(result.stderr).toBe('')
+    expect(JSON.parse(result.stdout)).toMatchObject({
+      findings: [],
+      scanErrors: [],
+      counts: { filesScanned: 2, linksChecked: 1 },
+    })
+  })
+
   it('runs the built executable against the checked-in Markdown repository', () => {
     const root = makeFixtureRepository()
     const result = captureBuiltCli(['--json'], root, true)
