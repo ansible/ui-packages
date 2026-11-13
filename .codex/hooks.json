@@ -1,5 +1,5 @@
 {
-  "description": "Prevent manual edits to Changeset fragments in this repository.",
+  "description": "Enforce shared agent write policies in this repository.",
   "hooks": {
     "PreToolUse": [
       {
@@ -7,9 +7,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/block-manual-changesets.ts\"",
+            "command": "node \"$(git rev-parse --show-toplevel)/.agents/hooks/pre-tool-use.ts\"",
             "timeout": 10,
-            "statusMessage": "Checking Changeset fragment writes"
+            "statusMessage": "Checking agent write policy"
           }
         ]
       }

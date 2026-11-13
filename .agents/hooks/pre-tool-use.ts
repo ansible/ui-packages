@@ -9,7 +9,7 @@ import {
   scriptWritesChangesetMarkdown,
   shellWritesDisallowedAgentHook,
   shellWritesChangesetMarkdown,
-} from '../../.agents/hooks/changeset-write-policy.ts'
+} from './changeset-write-policy.ts'
 
 type HookEvent = {
   tool_name?: string
@@ -35,6 +35,7 @@ if (['apply_patch', 'Edit', 'Write'].includes(toolName)) {
   for (const key of ['file_path', 'filePath', 'path', 'filename', 'target']) {
     if (typeof toolInput[key] === 'string') targets.push(toolInput[key] as string)
   }
+
   if (patchWritesChangesetMarkdown(command, cwd) || targets.some((target) => isChangesetMarkdownPath(target, cwd))) {
     blockReason = changesetWriteGuidance
   } else if (
@@ -43,7 +44,7 @@ if (['apply_patch', 'Edit', 'Write'].includes(toolName)) {
   ) {
     blockReason = agentHookTypeScriptGuidance
   }
-} else if (toolName === 'Bash') {
+} else if (['Bash', 'PowerShell'].includes(toolName)) {
   if (shellWritesChangesetMarkdown(command, cwd)) blockReason = changesetWriteGuidance
   else if (shellWritesDisallowedAgentHook(command, cwd)) blockReason = agentHookTypeScriptGuidance
 } else if (['exec', 'functions.exec'].includes(toolName)) {

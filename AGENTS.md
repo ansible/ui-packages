@@ -7,8 +7,8 @@ Do not write `.changeset/*.md` fragments by hand. The repository agent hook
 blocks direct edits and points to the npm script.
 
 Write agent hooks in TypeScript. Do not add Bash or Python hook files.
-Shared agent hook policies live in `.agents/hooks/`; put runtime-specific
-adapters and registrations with that agent's configuration.
+Shared agent hook policies and the common handler live in `.agents/hooks/`.
+Register that handler in each runtime's own configuration.
 
 Run `npm run check:agent-hook-policy` to reject Bash/Python hook files and
 `npm run tsc:agent-hooks` to type-check agent hooks. Both checks run in

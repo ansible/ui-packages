@@ -8,9 +8,9 @@
           {
             "type": "command",
             "command": "node",
-            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/block-manual-changesets.ts"],
+            "args": ["${CLAUDE_PROJECT_DIR}/.agents/hooks/pre-tool-use.ts"],
             "timeout": 10,
-            "statusMessage": "Checking Changeset fragment writes"
+            "statusMessage": "Checking agent write policy"
           }
         ]
       }

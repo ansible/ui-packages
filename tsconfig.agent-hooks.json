@@ -13,5 +13,5 @@
     "skipLibCheck": true,
     "strict": true
   },
-  "include": [".agents/hooks/**/*.ts", ".claude/hooks/**/*.ts", ".codex/hooks/**/*.ts"]
+  "include": [".agents/hooks/**/*.ts"]
 }
