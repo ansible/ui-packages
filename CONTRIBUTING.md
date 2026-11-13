@@ -40,6 +40,10 @@ Add a Changeset for every release-worthy change to a Changesets-managed
 package. See [RELEASING.md](RELEASING.md) for package ownership and the current
 release boundary. Publishing is disabled unless a separate change enables it.
 
+When a publish job runs, it sends a Slack notification after successful
+publication. Configure `SLACK_WEBHOOK_URL` as a repository GitHub Actions
+secret. Do not add it to `.env.schema` or commit its value.
+
 ## AI-assisted contributions
 
 See [AI_POLICY.md](AI_POLICY.md) for this repository's policy on AI-assisted
