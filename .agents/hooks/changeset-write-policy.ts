@@ -7,7 +7,7 @@ const fragmentPath = /(?<![\w.-])\.changeset[\\/][^\\/\s"'`]+\.md(?:$|[\s"'`)])/
 const patchFile = /^\s*\*\*\*\s+(?:(?:Add|Update|Delete)\s+File|Move to):\s*(.*?)\s*$/gm
 const embeddedCommand = /(?:cmd|command)\s*:\s*(['"])(.*?)\1/gs
 const safeShell =
-  /^\s*(?:git\s+(?:status|diff|show|log|ls-files|add)\b|(?:ls|cat|head|tail|less|more|sed|rg|grep|stat|file|wc)\b)/i
+  /^\s*(?:git\s+(?:status|diff|show|log|ls-files|add)\b|(?:ls|cat|head|tail|less|more|sed|rg|grep|stat|file|wc|Get-Content|Get-ChildItem|Get-Item|Test-Path|Select-String)\b)/i
 const shellControl = /[;&|<>`]|\$\(/
 
 export function isChangesetMarkdownPath(filePath: string, cwd = '.'): boolean {
