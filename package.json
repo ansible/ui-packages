@@ -30,7 +30,8 @@
     "graph": "nx graph",
     "test": "nx run-many --target vitest",
     "tsc": "nx run-many --target tsc && npm run tsc:agent-hooks",
-    "tsc:agent-hooks": "node .agents/hooks/check-agent-hook-policy.ts && tsc --noEmit --project tsconfig.agent-hooks.json",
+    "tsc:agent-hooks": "tsc --noEmit --project tsconfig.agent-hooks.json",
+    "check:agent-hook-policy": "node .agents/hooks/check-agent-hook-policy.ts",
     "eslint": "nx run-many --target eslint",
     "eslint:fix": "nx run-many --target eslint:fix",
     "vitest": "nx run-many --target vitest",
@@ -44,7 +45,7 @@
     "changesets:version": "changeset version",
     "prepare": "husky",
     "lint-staged": "lint-staged",
-    "static": "npm run tsc:agent-hooks && nx run-many --target tsc,prettier,eslint,depcheck,linkcheck",
+    "static": "npm run check:agent-hook-policy && npm run tsc:agent-hooks && nx run-many --target tsc,prettier,eslint,depcheck,linkcheck",
     "attw": "nx run-many --target attw",
     "linkcheck": "nx run @ansible/md-link-lint:linkcheck"
   },

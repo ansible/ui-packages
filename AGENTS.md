@@ -10,5 +10,6 @@ Write agent hooks in TypeScript. Do not add Bash or Python hook files.
 Shared agent hook policies live in `.agents/hooks/`; put runtime-specific
 adapters and registrations with that agent's configuration.
 
-Run `npm run tsc:agent-hooks` to reject Bash/Python hook files and type-check
-agent hooks. This check is included in `npm run tsc` and `npm run static`.
+Run `npm run check:agent-hook-policy` to reject Bash/Python hook files and
+`npm run tsc:agent-hooks` to type-check agent hooks. Both checks run in
+`npm run static`; type checking also runs in `npm run tsc`.
