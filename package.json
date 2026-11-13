@@ -30,7 +30,7 @@
     "graph": "nx graph",
     "test": "nx run-many --target vitest",
     "tsc": "nx run-many --target tsc && npm run tsc:agent-hooks",
-    "tsc:agent-hooks": "tsc --noEmit --project tsconfig.agent-hooks.json",
+    "tsc:agent-hooks": "node .agents/hooks/check-agent-hook-policy.ts && tsc --noEmit --project tsconfig.agent-hooks.json",
     "eslint": "nx run-many --target eslint",
     "eslint:fix": "nx run-many --target eslint:fix",
     "vitest": "nx run-many --target vitest",

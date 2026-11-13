@@ -1,6 +1,9 @@
 import {
+  agentHookTypeScriptGuidance,
   changesetWriteGuidance,
   isChangesetMarkdownPath,
+  isDisallowedAgentHookPath,
+  shellWritesDisallowedAgentHook,
   shellWritesChangesetMarkdown,
 } from '../../.agents/hooks/changeset-write-policy.ts'
 
@@ -18,17 +21,25 @@ const rawToolInput = event.tool_input
 const toolInput: ToolArguments =
   rawToolInput !== null && typeof rawToolInput === 'object' ? (rawToolInput as ToolArguments) : {}
 const cwd = event.cwd ?? '.'
-const shouldBlock = ['Write', 'Edit'].includes(toolName)
-  ? isChangesetMarkdownPath(getStringInput(toolInput, 'file_path'), cwd)
-  : ['Bash', 'PowerShell'].includes(toolName) && shellWritesChangesetMarkdown(getStringInput(toolInput, 'command'), cwd)
+let blockReason: string | undefined
 
-if (shouldBlock) {
+if (['Write', 'Edit'].includes(toolName)) {
+  const filePath = getStringInput(toolInput, 'file_path')
+  if (isChangesetMarkdownPath(filePath, cwd)) blockReason = changesetWriteGuidance
+  else if (isDisallowedAgentHookPath(filePath, cwd)) blockReason = agentHookTypeScriptGuidance
+} else if (['Bash', 'PowerShell'].includes(toolName)) {
+  const command = getStringInput(toolInput, 'command')
+  if (shellWritesChangesetMarkdown(command, cwd)) blockReason = changesetWriteGuidance
+  else if (shellWritesDisallowedAgentHook(command, cwd)) blockReason = agentHookTypeScriptGuidance
+}
+
+if (blockReason) {
   process.stdout.write(
     JSON.stringify({
       hookSpecificOutput: {
         hookEventName: 'PreToolUse',
         permissionDecision: 'deny',
-        permissionDecisionReason: changesetWriteGuidance,
+        permissionDecisionReason: blockReason,
       },
     }),
   )

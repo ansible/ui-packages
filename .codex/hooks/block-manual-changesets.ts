@@ -1,8 +1,13 @@
 import {
+  agentHookTypeScriptGuidance,
   changesetWriteGuidance,
   isChangesetMarkdownPath,
+  isDisallowedAgentHookPath,
   patchWritesChangesetMarkdown,
+  patchWritesDisallowedAgentHook,
+  scriptWritesDisallowedAgentHook,
   scriptWritesChangesetMarkdown,
+  shellWritesDisallowedAgentHook,
   shellWritesChangesetMarkdown,
 } from '../../.agents/hooks/changeset-write-policy.ts'
 
@@ -23,28 +28,36 @@ const cwd = event.cwd ?? '.'
 const command =
   typeof rawToolInput === 'string' ? rawToolInput : getStringInput(toolInput, ['command', 'cmd', 'patch', 'code'])
 
-let shouldBlock = false
+let blockReason: string | undefined
 
 if (['apply_patch', 'Edit', 'Write'].includes(toolName)) {
   const targets: string[] = []
   for (const key of ['file_path', 'filePath', 'path', 'filename', 'target']) {
     if (typeof toolInput[key] === 'string') targets.push(toolInput[key] as string)
   }
-  shouldBlock =
-    patchWritesChangesetMarkdown(command, cwd) || targets.some((target) => isChangesetMarkdownPath(target, cwd))
+  if (patchWritesChangesetMarkdown(command, cwd) || targets.some((target) => isChangesetMarkdownPath(target, cwd))) {
+    blockReason = changesetWriteGuidance
+  } else if (
+    patchWritesDisallowedAgentHook(command, cwd) ||
+    targets.some((target) => isDisallowedAgentHookPath(target, cwd))
+  ) {
+    blockReason = agentHookTypeScriptGuidance
+  }
 } else if (toolName === 'Bash') {
-  shouldBlock = shellWritesChangesetMarkdown(command, cwd)
+  if (shellWritesChangesetMarkdown(command, cwd)) blockReason = changesetWriteGuidance
+  else if (shellWritesDisallowedAgentHook(command, cwd)) blockReason = agentHookTypeScriptGuidance
 } else if (['exec', 'functions.exec'].includes(toolName)) {
-  shouldBlock = scriptWritesChangesetMarkdown(command)
+  if (scriptWritesChangesetMarkdown(command)) blockReason = changesetWriteGuidance
+  else if (scriptWritesDisallowedAgentHook(command, cwd)) blockReason = agentHookTypeScriptGuidance
 }
 
-if (shouldBlock) {
+if (blockReason) {
   process.stdout.write(
     JSON.stringify({
       hookSpecificOutput: {
         hookEventName: 'PreToolUse',
         permissionDecision: 'deny',
-        permissionDecisionReason: changesetWriteGuidance,
+        permissionDecisionReason: blockReason,
       },
     }),
   )
