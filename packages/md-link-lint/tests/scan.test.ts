@@ -294,6 +294,23 @@ describe('scan', () => {
     ])
   })
 
+  it('omits inline image alt text from Python-Markdown heading IDs', () => {
+    const root = makeRepository({
+      'AGENTS.md': '[setup](docs/guide.md#setup)\n[with alt](docs/guide.md#icon-setup)\n',
+      'docs/guide.md': '## ![icon](../assets/icon.svg) Setup\n',
+      'assets/icon.svg': '<svg />\n',
+    })
+
+    const report = scan({
+      cwd: root,
+      targetProfiles: { 'docs/**': 'python-markdown' },
+    })
+
+    expect(report.findings.map(({ destination, code }) => [destination, code])).toEqual([
+      ['docs/guide.md#icon-setup', 'missing-anchor'],
+    ])
+  })
+
   it('selects profiles by nested target path and uses the last matching path rule', () => {
     const root = makeRepository({
       'AGENTS.md': [

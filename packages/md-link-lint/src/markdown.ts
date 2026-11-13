@@ -38,6 +38,15 @@ function headingText(node: AstNode): string {
   return childNodes(node).map(headingText).join('')
 }
 
+/** Build the text Python-Markdown leaves after stripping rendered HTML tags. */
+function pythonMarkdownHeadingText(node: AstNode): string {
+  if (node.type === 'html' || node.type === 'image' || node.type === 'imageReference') return ''
+  if (node.type === 'text' || node.type === 'inlineCode' || node.type === 'code') {
+    return typeof node.value === 'string' ? node.value : ''
+  }
+  return childNodes(node).map(pythonMarkdownHeadingText).join('')
+}
+
 type PythonMarkdownHeading = {
   text: string
   explicitId?: string
@@ -47,10 +56,11 @@ type PythonMarkdownHeading = {
 function pythonMarkdownHeading(node: AstNode): PythonMarkdownHeading {
   const children = childNodes(node)
   const lastChild = children.at(-1)
-  if (lastChild?.type !== 'text' || typeof lastChild.value !== 'string') return { text: headingText(node) }
+  if (lastChild?.type !== 'text' || typeof lastChild.value !== 'string')
+    return { text: pythonMarkdownHeadingText(node) }
 
   const attributeList = /[ \t]+\{(?::?[ \t]*)([^{}\n]+)\}[ \t]*$/.exec(lastChild.value)
-  if (!attributeList) return { text: headingText(node) }
+  if (!attributeList) return { text: pythonMarkdownHeadingText(node) }
 
   const attributeTokens = attributeList[1]?.match(/(?:[^\s=]+=(?:"[^"]*"|'[^']*'|[^\s]+)|[^\s]+)/g) ?? []
   let explicitId: string | undefined
@@ -64,7 +74,7 @@ function pythonMarkdownHeading(node: AstNode): PythonMarkdownHeading {
     if (idAttribute) explicitId = idAttribute[1] ?? idAttribute[2] ?? idAttribute[3] ?? ''
   }
 
-  const text = headingText(node)
+  const text = pythonMarkdownHeadingText(node)
   return { text: text.slice(0, Math.max(0, text.length - attributeList[0].length)), explicitId }
 }
 
