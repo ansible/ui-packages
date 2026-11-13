@@ -19,21 +19,6 @@ npm test
 
 GitHub Actions also runs the relevant checks for pull requests.
 
-## Environment configuration
-
-Use Varlock schemas for environment variables. The root `.env.schema` holds
-shared settings; apps add a nearby `.env.schema` and import only the shared
-items they use. Packages without environment variables do not need a schema.
-Keep local values in ignored `.env.local` files, mark secrets sensitive, and
-never commit plaintext `.env` files.
-
-Validate the schemas with:
-
-```sh
-npm exec -- varlock load --agent
-npm exec -- varlock load --agent --path examples/ui-plugin-example-pf5/
-```
-
 ## Changesets
 
 Add a Changeset for every release-worthy change to a Changesets-managed
@@ -42,7 +27,7 @@ release boundary. Publishing is disabled unless a separate change enables it.
 
 When a publish job runs, it sends a Slack notification after successful
 publication. Configure `SLACK_WEBHOOK_URL` as a repository GitHub Actions
-secret. Do not add it to `.env.schema` or commit its value.
+secret. Never commit its value.
 
 ## AI-assisted contributions
 

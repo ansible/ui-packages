@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "tests", "env.d.ts"],
+  "include": ["src", "tests"],
   "exclude": ["**/*.test.ts", "**/*.test.tsx"]
 }

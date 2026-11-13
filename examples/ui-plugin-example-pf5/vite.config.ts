@@ -1,7 +1,6 @@
 /// <reference types="vitest" />
 import { federation } from '@module-federation/vite'
 import react from '@vitejs/plugin-react-swc'
-import { varlockVitePlugin } from '@varlock/vite-integration'
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
@@ -17,7 +16,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    varlockVitePlugin(),
     react(),
     process.env.NODE_ENV !== 'test' &&
       federation({
