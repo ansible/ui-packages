@@ -64,6 +64,7 @@ if (blockReason) {
   )
 }
 
+/** Read the complete hook event payload from standard input. */
 function readStdin(): Promise<string> {
   return new Promise((resolve, reject) => {
     let input = ''
@@ -74,6 +75,7 @@ function readStdin(): Promise<string> {
   })
 }
 
+/** Return the first string value found for the requested tool input keys. */
 function getStringInput(input: ToolArguments, keys: string[]): string {
   for (const key of keys) {
     const value = input[key]

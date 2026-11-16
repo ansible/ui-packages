@@ -44,6 +44,8 @@
     "prepack": "npm run build",
     "prepublishOnly": "npm test",
     "eslint": "cd ../.. && node --experimental-strip-types packages/eslint-plugin/node_modules/eslint/bin/eslint.js --config packages/eslint-plugin/eslint.config.js packages/eslint-plugin",
+    "eslint:agent-hooks": "cd ../.. && node --experimental-strip-types packages/eslint-plugin/node_modules/eslint/bin/eslint.js --config packages/eslint-plugin/eslint.config.js --max-warnings 0 --report-unused-disable-directives .agents/hooks",
+    "eslint:fix:agent-hooks": "cd ../.. && node --experimental-strip-types packages/eslint-plugin/node_modules/eslint/bin/eslint.js --config packages/eslint-plugin/eslint.config.js --fix .agents/hooks",
     "vitest": "vitest run --environment node",
     "prettier": "prettier --check README.md eslint-rules src tests package.json tsconfig.json tsconfig.test.json eslint.config.js .attw.json",
     "depcheck": "depcheck --ignores @ansible/eslint-plugin"

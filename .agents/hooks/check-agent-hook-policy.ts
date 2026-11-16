@@ -55,8 +55,17 @@ const scripts = isRecord(packageJson) && isRecord(packageJson.scripts) ? package
 if (scripts['tsc:agent-hooks'] !== 'tsc --noEmit --project tsconfig.agent-hooks.json') {
   policyErrors.push('Keep tsc:agent-hooks limited to `tsc --noEmit --project tsconfig.agent-hooks.json`.')
 }
-if (scripts['eslint:agent-hooks'] !== 'eslint --max-warnings 0 --report-unused-disable-directives .agents/hooks') {
-  policyErrors.push('Add an eslint:agent-hooks script that lints the shared TypeScript hook sources.')
+if (
+  scripts['eslint:agent-hooks'] !==
+  'eslint --max-warnings 0 --report-unused-disable-directives .agents/hooks && npm run eslint:agent-hooks --workspace=@ansible/eslint-plugin'
+) {
+  policyErrors.push('Run repository ESLint and @ansible/eslint-plugin rules on the shared TypeScript hook sources.')
+}
+if (
+  scripts['eslint:fix:agent-hooks'] !==
+  'eslint --fix --max-warnings 0 --report-unused-disable-directives .agents/hooks && npm run eslint:fix:agent-hooks --workspace=@ansible/eslint-plugin'
+) {
+  policyErrors.push('Run repository and @ansible ESLint fixes on the shared TypeScript hook sources.')
 }
 if (scripts['prettier:agent-hooks'] !== 'prettier --check .agents/hooks') {
   policyErrors.push('Add a prettier:agent-hooks script that checks formatting for the shared hook sources.')
@@ -81,6 +90,28 @@ if (
   policyErrors.push('Configure lint-staged to lint and format staged `.ts` and `.tsx` files.')
 }
 
+const ansibleEslintConfig = readFileSync(join(repositoryRoot, 'packages/eslint-plugin/eslint.config.js'), 'utf8')
+if (
+  !ansibleEslintConfig.includes("'.agents/hooks/**/*.{js,jsx,ts,tsx}'") ||
+  !ansibleEslintConfig.includes("'.agents/hooks/**/*.{ts,tsx}'")
+) {
+  policyErrors.push('The @ansible ESLint config must apply its repository and TypeScript rules to shared hook sources.')
+}
+
+const ansibleEslintPackage = JSON.parse(
+  readFileSync(join(repositoryRoot, 'packages/eslint-plugin/package.json'), 'utf8'),
+) as unknown
+const ansibleEslintScripts =
+  isRecord(ansibleEslintPackage) && isRecord(ansibleEslintPackage.scripts) ? ansibleEslintPackage.scripts : {}
+if (
+  ansibleEslintScripts['eslint:agent-hooks'] !==
+    'cd ../.. && node --experimental-strip-types packages/eslint-plugin/node_modules/eslint/bin/eslint.js --config packages/eslint-plugin/eslint.config.js --max-warnings 0 --report-unused-disable-directives .agents/hooks' ||
+  ansibleEslintScripts['eslint:fix:agent-hooks'] !==
+    'cd ../.. && node --experimental-strip-types packages/eslint-plugin/node_modules/eslint/bin/eslint.js --config packages/eslint-plugin/eslint.config.js --fix .agents/hooks'
+) {
+  policyErrors.push('Configure @ansible/eslint-plugin commands to lint and fix the shared TypeScript hook sources.')
+}
+
 const pullRequestWorkflow = readFileSync(join(repositoryRoot, '.github/workflows/pull-request.yml'), 'utf8')
 if (!pullRequestWorkflow.includes('npm run static')) {
   policyErrors.push('The pull-request workflow must run `npm run static`.')
@@ -91,6 +122,7 @@ if (policyErrors.length > 0) {
   process.exitCode = 1
 }
 
+/** Find unsupported Bash and Python hook files recursively. */
 function findUnsupportedFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const filePath = join(directory, entry.name)
@@ -99,6 +131,7 @@ function findUnsupportedFiles(directory: string): string[] {
   })
 }
 
+/** Find files matching a pattern below a directory recursively. */
 function findFiles(directory: string, filePattern: RegExp): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const filePath = join(directory, entry.name)
@@ -107,6 +140,7 @@ function findFiles(directory: string, filePattern: RegExp): string[] {
   })
 }
 
+/** Check whether a tool configuration registers exactly one shared PreToolUse handler. */
 function hasSingleSharedPreToolUseHandler(config: unknown): boolean {
   if (!isRecord(config) || !isRecord(config.hooks) || !Array.isArray(config.hooks.PreToolUse)) return false
 
@@ -117,6 +151,7 @@ function hasSingleSharedPreToolUseHandler(config: unknown): boolean {
   return typeof serializedHandler === 'string' && serializedHandler.includes(sharedHandlerPath)
 }
 
+/** Check whether a value is a non-array object. */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }

@@ -15,15 +15,15 @@ const project = {
   },
 }
 
-const workspaceCode = ['packages/**/*.{js,jsx,ts,tsx}']
-const workspaceTypeScript = ['packages/**/*.{ts,tsx}']
+const repositoryCode = ['packages/**/*.{js,jsx,ts,tsx}', '.agents/hooks/**/*.{js,jsx,ts,tsx}']
+const repositoryTypeScript = ['packages/**/*.{ts,tsx}', '.agents/hooks/**/*.{ts,tsx}']
 
 export default [
   {
     ignores: ['**/dist/**', '**/node_modules/**'],
   },
   {
-    files: workspaceTypeScript,
+    files: repositoryTypeScript,
     languageOptions: {
       parser,
       parserOptions: {
@@ -39,10 +39,10 @@ export default [
   ...ansible.configs.recommended,
   ...ansible.configs['documented-functions'].map((config) => ({
     ...config,
-    files: workspaceCode,
+    files: repositoryCode,
   })),
   {
-    files: workspaceCode,
+    files: repositoryCode,
     plugins: {
       '@ansible': ansible,
       project,
@@ -52,7 +52,7 @@ export default [
     },
   },
   {
-    files: workspaceTypeScript,
+    files: repositoryTypeScript,
     rules: {
       '@ansible/require-function-jsdoc': ['error', { allowTypeTags: false }],
     },

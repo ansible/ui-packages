@@ -15,6 +15,7 @@ const safeShell =
   /^\s*(?:git\s+(?:status|diff|show|log|ls-files|add)\b|(?:ls|cat|head|tail|less|more|sed|rg|grep|stat|file|wc|Get-Content|Get-ChildItem|Get-Item|Test-Path|Select-String)\b)/i
 const shellControl = /[;&|<>`]|\$\(/
 
+/** Check whether a path names a Markdown fragment inside a Changesets directory. */
 export function isChangesetMarkdownPath(filePath: string, cwd = '.'): boolean {
   const normalized = filePath.replaceAll('\\', '/')
   const segments = normalized.split('/')
@@ -26,10 +27,12 @@ export function isChangesetMarkdownPath(filePath: string, cwd = '.'): boolean {
   return path.basename(path.dirname(resolved)) === '.changeset' && path.extname(resolved).toLowerCase() === '.md'
 }
 
+/** Check whether an editor patch writes a Changeset Markdown fragment. */
 export function patchWritesChangesetMarkdown(patch: string, cwd = '.'): boolean {
   return [...patch.matchAll(patchFile)].some((match) => isChangesetMarkdownPath(match[1].trim(), cwd))
 }
 
+/** Check whether a shell command may write a Changeset Markdown fragment. */
 export function shellWritesChangesetMarkdown(command: string, cwd = '.'): boolean {
   const referencesFragment = fragmentPath.test(command)
   const writesFromChangesetDirectory = isInsideChangesets(cwd) && /\.md(?:$|\W)/i.test(command)
@@ -41,6 +44,7 @@ export function shellWritesChangesetMarkdown(command: string, cwd = '.'): boolea
   )
 }
 
+/** Check whether a script source may write a Changeset Markdown fragment. */
 export function scriptWritesChangesetMarkdown(source: string): boolean {
   if (!fragmentPath.test(source)) return false
   if (
@@ -55,6 +59,7 @@ export function scriptWritesChangesetMarkdown(source: string): boolean {
   return commands.length === 0 || commands.some((command) => !isNonwritingShellCommand(command))
 }
 
+/** Check whether a path names a Bash or Python file inside an agent hook directory. */
 export function isDisallowedAgentHookPath(filePath: string, cwd = '.'): boolean {
   return (
     unsupportedAgentHookExtension.test(filePath) &&
@@ -62,10 +67,12 @@ export function isDisallowedAgentHookPath(filePath: string, cwd = '.'): boolean 
   )
 }
 
+/** Check whether an editor patch writes a Bash or Python agent hook. */
 export function patchWritesDisallowedAgentHook(patch: string, cwd = '.'): boolean {
   return [...patch.matchAll(patchFile)].some((match) => isDisallowedAgentHookPath(match[1].trim(), cwd))
 }
 
+/** Check whether a shell command may write a Bash or Python agent hook. */
 export function shellWritesDisallowedAgentHook(command: string, cwd = '.'): boolean {
   const mentionsHookDirectory = agentHookDirectoryReference.test(command) || isAgentHookDirectory(cwd)
   return (
@@ -73,6 +80,7 @@ export function shellWritesDisallowedAgentHook(command: string, cwd = '.'): bool
   )
 }
 
+/** Check whether a script source may write a Bash or Python agent hook. */
 export function scriptWritesDisallowedAgentHook(source: string, cwd = '.'): boolean {
   const mentionsHookDirectory = agentHookDirectoryReference.test(source) || isAgentHookDirectory(cwd)
   if (!mentionsHookDirectory || !unsupportedAgentHookExtensionReference.test(source)) return false
@@ -88,6 +96,7 @@ export function scriptWritesDisallowedAgentHook(source: string, cwd = '.'): bool
   return commands.length === 0 || commands.some((command) => shellWritesDisallowedAgentHook(command, cwd))
 }
 
+/** Check whether a path is under a hidden agent configuration hooks directory. */
 function isDisallowedAgentHookDirectory(directory: string): boolean {
   const segments = directory.replaceAll('\\', '/').split('/').filter(Boolean)
   return segments.some(
@@ -97,14 +106,17 @@ function isDisallowedAgentHookDirectory(directory: string): boolean {
   )
 }
 
+/** Check whether a path is a disallowed hook file within an agent hook directory. */
 function isAgentHookPath(filePath: string): boolean {
   return unsupportedAgentHookExtension.test(filePath) && isDisallowedAgentHookDirectory(filePath)
 }
 
+/** Check whether a directory resolves to an agent hook directory. */
 function isAgentHookDirectory(directory: string): boolean {
   return isDisallowedAgentHookDirectory(path.resolve(directory))
 }
 
+/** Check whether a directory is inside a Changesets folder. */
 function isInsideChangesets(directory: string): boolean {
   let current = path.resolve(directory)
   while (true) {
@@ -115,6 +127,7 @@ function isInsideChangesets(directory: string): boolean {
   }
 }
 
+/** Check whether a simple allowlisted shell command only reads repository data. */
 function isNonwritingShellCommand(command: string): boolean {
   return !shellControl.test(command) && safeShell.test(command)
 }
