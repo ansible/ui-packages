@@ -129,5 +129,6 @@ function isInsideChangesets(directory: string): boolean {
 
 /** Check whether a simple allowlisted shell command only reads repository data. */
 function isNonwritingShellCommand(command: string): boolean {
-  return !shellControl.test(command) && safeShell.test(command)
+  const writesToOutputFile = /(?:^|\s)["']?--output(?=$|[=\s"'])/i.test(command)
+  return !shellControl.test(command) && !writesToOutputFile && safeShell.test(command)
 }
