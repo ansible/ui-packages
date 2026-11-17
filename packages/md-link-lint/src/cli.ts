@@ -1,6 +1,7 @@
 import { Command, CommanderError } from 'commander'
-import { realpathSync } from 'node:fs'
+import { readFileSync, realpathSync } from 'node:fs'
 import { createRequire } from 'node:module'
+import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { scan } from './scan.js'
 import type { ScanError, ScanOptions, ScanReport } from './types.js'
@@ -16,8 +17,51 @@ type CliIO = {
 }
 
 type CliOptions = {
+  config?: string
   json: boolean
   exclude: string[]
+}
+
+type ScanProfileOptions = Pick<ScanOptions, 'defaultProfile' | 'targetProfiles'>
+
+/** Read the optional JSON profile configuration, returning a concise CLI diagnostic on failure. */
+function readProfileConfig(path: string, cwd: string): { config?: ScanProfileOptions; error?: string } {
+  let contents: string
+  try {
+    contents = readFileSync(resolve(cwd, path), 'utf8')
+  } catch (error) {
+    return {
+      error:
+        'cannot read configuration file ' +
+        JSON.stringify(path) +
+        ': ' +
+        (error instanceof Error ? error.message : String(error)),
+    }
+  }
+
+  let value: unknown
+  try {
+    value = JSON.parse(contents)
+  } catch (error) {
+    return {
+      error:
+        'cannot parse configuration file ' +
+        JSON.stringify(path) +
+        ': ' +
+        (error instanceof Error ? error.message : String(error)),
+    }
+  }
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    return { error: 'configuration file must contain a JSON object' }
+  }
+
+  const configuration = value as Record<string, unknown>
+  for (const key of Object.keys(configuration)) {
+    if (key !== 'defaultProfile' && key !== 'targetProfiles') {
+      return { error: 'unknown configuration option: ' + JSON.stringify(key) }
+    }
+  }
+  return { config: configuration as ScanProfileOptions }
 }
 
 /** Render an incomplete-scan diagnostic with any available source and target locations. */
@@ -55,6 +99,7 @@ export function runCli(argv: string[], io: CliIO): number {
     .description('Check local file and heading links in Markdown files in a Git repository.')
     .version(packageVersion)
     .option('--json', 'emit the scan report as JSON')
+    .option('--config <path>', 'load Markdown profiles from a JSON configuration file')
     .option(
       '-e, --exclude <glob>',
       'exclude source Markdown files matching a glob (repeatable)',
@@ -85,7 +130,16 @@ export function runCli(argv: string[], io: CliIO): number {
 
   const options = program.opts<CliOptions>()
   const paths = program.args as string[]
-  const scanOptions: ScanOptions = { cwd: io.cwd, paths, exclude: options.exclude }
+  let profileOptions: ScanProfileOptions = {}
+  if (options.config !== undefined) {
+    const loaded = readProfileConfig(options.config, io.cwd)
+    if (loaded.error !== undefined) {
+      io.stderr(loaded.error + '\n')
+      return 2
+    }
+    profileOptions = loaded.config ?? {}
+  }
+  const scanOptions: ScanOptions = { ...profileOptions, cwd: io.cwd, paths, exclude: options.exclude }
   const report = scan(scanOptions)
 
   if (options.json) io.stdout(`${JSON.stringify(report)}\n`)

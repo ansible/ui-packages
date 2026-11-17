@@ -1,0 +1,18 @@
+{
+  "description": "Enforce shared agent write policies in this repository.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^(Bash|apply_patch|Edit|Write|exec|functions\\.exec)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.agents/hooks/pre-tool-use.ts\"",
+            "timeout": 10,
+            "statusMessage": "Checking agent write policy"
+          }
+        ]
+      }
+    ]
+  }
+}

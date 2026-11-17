@@ -20,6 +20,7 @@ npx md-link-lint docs
 npx md-link-lint AGENTS.md README.md
 npx md-link-lint --exclude 'vendor/**' --exclude 'docs/generated/**'
 npx md-link-lint --json
+npx md-link-lint --config md-link-lint.config.json
 ```
 
 To build and run the package from a workspace checkout:
@@ -34,11 +35,30 @@ With no paths, the command scans the current Git working tree. Paths can name fi
 
 Only `.md` and `.markdown` files are scanned, without regard to extension case. Source exclusions are repeatable globs matched against repository-relative paths. A source can link to any existing target in the working tree, including a Markdown file outside the selected scan paths. The tool requires a Git working tree and does not traverse submodules.
 
+## Markdown profiles
+
+By default, heading fragments use GitHub-style IDs. Use a JSON configuration file to select the heading rules for each target path:
+
+```json
+{
+  "defaultProfile": "github",
+  "targetProfiles": {
+    "docs/**": "python-markdown"
+  }
+}
+```
+
+Pass the file with `md-link-lint --config md-link-lint.config.json`. Paths are repository-relative globs. Rules are checked in their declaration order, and the last matching rule wins. This applies to self-links and to links from one Markdown file to another.
+
+The `python-markdown` profile supports the default Table of Contents heading IDs: punctuation is removed, Latin characters are normalized to ASCII, and duplicate headings receive `_1`, `_2`, and later suffixes. It also honors explicit heading IDs from the `attr_list` extension, such as `## Setup {#custom-setup}`.
+
+This profile models the default Python-Markdown TOC slugger and heading attribute lists. Custom slug functions, Unicode-preserving slug configuration, IDs on non-heading elements, and other renderer extensions are not modeled.
+
 ## What is checked
 
 - Relative paths resolve from the linking document. A single-leading-slash path resolves from the repository root.
 - Existing files and directories are accepted. Queries are ignored for file checks.
-- Markdown heading fragments are checked in the current or linked Markdown document using GitHub-style heading slugs and duplicate suffixes.
+- Markdown heading fragments are checked in the current or linked Markdown document using the profile selected for that target path.
 - File fragments such as `src/index.ts#L10` receive an existence check; line numbers are not validated.
 - Inline links, resolved reference links, images, and Markdown autolinks are extracted with GFM support.
 - External URI schemes, including `file:`, protocol-relative destinations, and links inside code or embedded HTML are skipped. The tool never makes HTTP requests.
@@ -62,10 +82,12 @@ const report = scan({
   cwd: process.cwd(),
   paths: ['AGENTS.md', '.agents'],
   exclude: ['.agents/generated/**'],
+  defaultProfile: 'github',
+  targetProfiles: { 'docs/**': 'python-markdown' },
 })
 ```
 
-`scan(options)` returns a `ScanReport` with the repository root, sorted findings, scan errors, and counts for selected/scanned files, discovered/checked/skipped links, and skipped anchor checks. It does not print output or set process exit codes.
+`scan(options)` also accepts `defaultProfile` and `targetProfiles` with the same shape as the configuration file. It returns a `ScanReport` with the repository root, sorted findings, scan errors, and counts for selected/scanned files, discovered/checked/skipped links, and skipped anchor checks. It does not print output or set process exit codes.
 
 ## Runtime
 
