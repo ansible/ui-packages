@@ -180,7 +180,7 @@ export function scan(options: ScanOptions = {}): ScanReport {
     targetProfileRules = compileTargetProfileRules(options.targetProfiles)
   } catch (error) {
     return createErrorReport({
-      code: 'invalid-target-profile-glob',
+      code: 'invalid-options',
       reason: errorMessage(error),
     })
   }

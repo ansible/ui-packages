@@ -17,7 +17,6 @@ export type Finding = {
 export type ScanErrorCode =
   | 'invalid-options'
   | 'invalid-exclude-glob'
-  | 'invalid-target-profile-glob'
   | 'not-a-git-repository'
   | 'git-command-failed'
   | 'input-path-not-found'
