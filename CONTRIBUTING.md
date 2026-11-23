@@ -19,6 +19,12 @@ npm test
 
 GitHub Actions also runs the relevant checks for pull requests.
 
+## Documentation
+
+Documentation source lives in [`docs/`](docs/index.md). See the
+[docsite contributor guide](docs/contributing.md) to preview the site and make
+documentation changes.
+
 ## Changesets
 
 Add a Changeset for every release-worthy change to a Changesets-managed

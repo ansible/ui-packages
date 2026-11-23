@@ -1,0 +1,15 @@
+site_name: Ansible UI Packages
+site_url: https://docs.ansible.com/projects/ui-packages/
+repo_url: https://github.com/ansible/ui-packages
+edit_uri: edit/main/docs/
+copyright: Copyright © Red Hat, Inc.
+strict: true
+
+theme:
+  name: ansible
+
+nav:
+  - Home: index.md
+  - Packages: packages.md
+  - Usage: usage.md
+  - Contributing: contributing.md
