@@ -1,0 +1,3 @@
+mkdocs==1.6.1
+mkdocs-ansible==26.4.0
+pymdown-extensions==13.1.2

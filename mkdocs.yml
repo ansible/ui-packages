@@ -1,0 +1,24 @@
+site_name: Ansible UI Packages
+site_url: https://docs.ansible.com/projects/ui-packages/
+repo_url: https://github.com/ansible/ui-packages
+edit_uri: edit/main/docs/
+copyright: Copyright © Red Hat, Inc.
+strict: true
+
+exclude_docs: |
+  /plans/
+  /requirements.txt
+
+theme:
+  name: ansible
+
+nav:
+  - Home: index.md
+  - Packages:
+      - ESLint plugin: packages/eslint-plugin.md
+      - Markdown link linter: packages/md-link-lint.md
+
+markdown_extensions:
+  - pymdownx.snippets:
+      base_path: .
+      check_paths: true
