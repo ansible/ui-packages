@@ -5,6 +5,10 @@ edit_uri: edit/main/docs/
 copyright: Copyright © Red Hat, Inc.
 strict: true
 
+exclude_docs: |
+  /plans/
+  /requirements.txt
+
 theme:
   name: ansible
 
