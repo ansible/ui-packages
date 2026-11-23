@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'docs/**'
+      - 'packages/eslint-plugin/README.md'
+      - 'packages/md-link-lint/README.md'
       - 'mkdocs.yml'
       - '.readthedocs.yaml'
       - '.github/workflows/ci-docs.yml'
