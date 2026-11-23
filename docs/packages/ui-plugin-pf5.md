@@ -1,1 +1,0 @@
---8<-- "packages/ui-plugin-pf5/README.md"

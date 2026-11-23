@@ -15,9 +15,6 @@ theme:
 nav:
   - Home: index.md
   - Packages:
-      - UI Plugin SDK: packages/ui-plugin-sdk.md
-      - UI Plugin Loader: packages/ui-plugin-loader.md
-      - UI Plugin PatternFly 5: packages/ui-plugin-pf5.md
       - ESLint plugin: packages/eslint-plugin.md
       - Markdown link linter: packages/md-link-lint.md
 
