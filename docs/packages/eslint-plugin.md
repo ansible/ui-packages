@@ -1,0 +1,1 @@
+--8<-- "packages/eslint-plugin/README.md"

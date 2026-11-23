@@ -1,0 +1,1 @@
+--8<-- "packages/md-link-lint/README.md"

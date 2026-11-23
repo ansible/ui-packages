@@ -1,0 +1,1 @@
+--8<-- "packages/ui-plugin-sdk/README.md"
