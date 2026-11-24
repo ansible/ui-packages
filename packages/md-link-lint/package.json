@@ -28,11 +28,13 @@
     "tsc": "tsc --noEmit --project tsconfig.json",
     "eslint": "eslint --max-warnings 0 --report-unused-disable-directives src tests",
     "eslint:fix": "eslint --fix src tests",
-    "prettier": "prettier --check src tests tsconfig.json tsdown.config.ts package.json README.md",
-    "prettier:fix": "prettier --write src tests tsconfig.json tsdown.config.ts package.json README.md",
+    "prettier": "prettier --check src tests tsconfig.json tsdown.config.ts api-extractor.json package.json README.md",
+    "prettier:fix": "prettier --write src tests tsconfig.json tsdown.config.ts api-extractor.json package.json README.md",
     "depcheck": "depcheck",
     "vitest": "vitest run --environment node",
     "test": "npm run build && vitest run --environment node",
+    "api": "npm run build && api-extractor run --config api-extractor.json",
+    "api:update": "npm run build && api-extractor run --config api-extractor.json --local",
     "linkcheck": "cd ../.. && node packages/md-link-lint/dist/cli.js --exclude 'packages/md-link-lint/tests/fixtures/**'",
     "lint": "npm run build && npm run linkcheck",
     "prepack": "npm run build"
@@ -48,6 +50,7 @@
   "devDependencies": {
     "@types/node": "26.3.0",
     "@types/picomatch": "4.0.3",
+    "@microsoft/api-extractor": "7.59.4",
     "tsdown": "0.22.14",
     "typescript": "7.0.2",
     "vitest": "4.1.12"
