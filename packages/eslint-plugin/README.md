@@ -121,8 +121,10 @@ export default [
 ]
 ```
 
-Global fetch and XMLHttpRequest are allowed by default. Enable disallowFetch
-or disallowXMLHttpRequest to check those browser APIs too.
+Global fetch and XMLHttpRequest are allowed by default. Enable `disallowFetch`
+to check calls and references to the global fetch function, including aliases,
+callbacks, `window.fetch`, `globalThis.fetch`, and destructuring. Enable
+`disallowXMLHttpRequest` to check that browser API too.
 
 ## Compatibility
 
@@ -147,9 +149,10 @@ default parser and TypeScript with the workspace's `@typescript-eslint/parser`.
 - `@ansible/no-hardcoded-doc-urls`: reports configured documentation URLs at the
   start of string values so projects can use a shared link helper.
 - `@ansible/no-unapproved-http-client`: reports imports from common HTTP-client
-  packages unless they appear in approvedModules. Direct fetch and
-  XMLHttpRequest checks are separately controlled by disallowFetch and
-  disallowXMLHttpRequest, and the rule is enabled only by http-client-policy.
+  packages unless they appear in approvedModules. Global fetch calls and
+  references are controlled by `disallowFetch`; XMLHttpRequest construction is
+  controlled by `disallowXMLHttpRequest`. The rule is enabled only by
+  `http-client-policy`.
 - `@ansible/no-nested-component-definitions`: reports React function component
   definitions inside a component or hook body, which give the component a new
   identity on every render. Move them to module scope and pass data as props.

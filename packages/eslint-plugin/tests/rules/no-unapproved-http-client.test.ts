@@ -1,3 +1,4 @@
+import parser from '@typescript-eslint/parser'
 import { RuleTester } from './rule-tester.js'
 
 import rule from '../../src/rules/no-unapproved-http-client.js'
@@ -16,8 +17,43 @@ new RuleTester({
       options: [{ disallowFetch: true }],
     },
     {
+      code: "function request(fetch) { const alias = fetch; return alias('/resource'); }",
+      options: [{ disallowFetch: true }],
+    },
+    {
       code: "function request(window) { window['fetch']('/resource'); }",
       options: [{ disallowFetch: true }],
+    },
+    {
+      code: 'function request(window) { return window.fetch; }',
+      options: [{ disallowFetch: true }],
+    },
+    {
+      code: 'function request(globalThis) { return globalThis.fetch; }',
+      options: [{ disallowFetch: true }],
+    },
+    {
+      code: "const fetch = 'custom'; const request = window[fetch];",
+      options: [{ disallowFetch: true }],
+    },
+    {
+      code: 'const { fetch } = client;',
+      options: [{ disallowFetch: true }],
+    },
+    {
+      code: 'const window = {}; const { fetch } = window;',
+      options: [{ disallowFetch: true }],
+    },
+    {
+      code: 'const globalThis = {}; const { fetch } = globalThis;',
+      options: [{ disallowFetch: true }],
+    },
+    {
+      code: 'window.fetch = request;',
+      options: [{ disallowFetch: true }],
+    },
+    {
+      code: 'const request = fetch;',
     },
     {
       code: 'class XMLHttpRequest {} new XMLHttpRequest();',
@@ -51,6 +87,71 @@ new RuleTester({
       errors: [{ messageId: 'rawFetch' }],
     },
     {
+      code: 'const request = fetch;',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'useClient(fetch);',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'const request = window.fetch;',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: "const request = window['fetch'];",
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'const request = globalThis.fetch;',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: "useClient(globalThis['fetch']);",
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'const request = (window.fetch ||= fallback);',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'const { fetch } = window;',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'const { fetch: request } = globalThis;',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: "const { ['fetch']: request } = window;",
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'let request; ({ fetch: request } = globalThis);',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'function use({ fetch } = window) {}',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'function use({ fetch } = window) { const window = {}; }',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
       code: "window['fetch']('/api/v1/auth/providers');",
       options: [{ disallowFetch: true }],
       errors: [{ messageId: 'rawFetch' }],
@@ -74,6 +175,33 @@ new RuleTester({
       code: "new globalThis['XMLHttpRequest']();",
       options: [{ disallowXMLHttpRequest: true }],
       errors: [{ messageId: 'rawXMLHttpRequest' }],
+    },
+  ],
+})
+
+new RuleTester({
+  languageOptions: {
+    parser,
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
+}).run('no-unapproved-http-client (TypeScript)', rule, {
+  valid: [
+    {
+      code: 'type Request = typeof fetch;',
+      options: [{ disallowFetch: true }],
+    },
+  ],
+  invalid: [
+    {
+      code: 'type fetch = unknown; const request = fetch;',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
+    },
+    {
+      code: 'const { fetch } = window as Window;',
+      options: [{ disallowFetch: true }],
+      errors: [{ messageId: 'rawFetch' }],
     },
   ],
 })
