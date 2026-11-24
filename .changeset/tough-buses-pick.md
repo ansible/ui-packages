@@ -2,4 +2,4 @@
 '@ansible/eslint-plugin': minor
 ---
 
-Detect aliases of the global fetch API when disallowFetch is enabled.
+`@ansible/no-unapproved-http-client` detects aliases of the global fetch API when disallowFetch is enabled.
